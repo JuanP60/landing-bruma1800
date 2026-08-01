@@ -1,0 +1,644 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Tokens de marca — mismos valores y mismos nombres que el sitio
+   estático original (bruma1800-landing/dist/styles.css). Se
+   conservan como custom properties en :root porque la capa de
+   animación de más abajo (bruma, mockups flotantes, ornamentación)
+   los referencia directamente en cálculos de keyframes que no
+   tienen equivalente práctico como utilidades atómicas.
+   ============================================================ */
+:root {
+  --cafe-profundo: #3b2418;
+  --piedra-calida: #e8ddc7;
+  --hueso: #f7f1e4;
+  --hueso-claro: #fbf7ee;
+  --tierra: #6e5744;
+  --arena: #c9b79e;
+  --gris-calido: #9c8a78;
+  --terracota: #b5451f;
+  --terracota-viva: #e85a2b;
+  --verde-hoja: #4a6741;
+  --niebla: #b7c9d3;
+  /* Club 1800 — paleta propia, no se mezcla con la de arriba */
+  --club-negro: #0a0a0a;
+  --club-plata: #d8dbde;
+  --club-plata-media: #c7cbcf;
+  --club-gris: #8b8f94;
+}
+
+@theme {
+  --color-cafe-profundo: var(--cafe-profundo);
+  --color-piedra-calida: var(--piedra-calida);
+  --color-hueso: var(--hueso);
+  --color-hueso-claro: var(--hueso-claro);
+  --color-tierra: var(--tierra);
+  --color-arena: var(--arena);
+  --color-gris-calido: var(--gris-calido);
+  --color-terracota: var(--terracota);
+  --color-terracota-viva: var(--terracota-viva);
+  --color-verde-hoja: var(--verde-hoja);
+  --color-niebla: var(--niebla);
+  --color-club-negro: var(--club-negro);
+  --color-club-plata: var(--club-plata);
+  --color-club-plata-media: var(--club-plata-media);
+  --color-club-gris: var(--club-gris);
+
+  /* Los tres quiebres reales del diseño original, para que sm:/md:/lg:
+     caigan exactamente en 720 / 980 / 1440 en vez de los defaults de Tailwind. */
+  --breakpoint-sm: 720px;
+  --breakpoint-md: 980px;
+  --breakpoint-lg: 1440px;
+
+  --radius-chip: 12px;
+  --radius-card: 16px;
+}
+
+/* `inline` porque estos valores dependen de las custom properties que
+   next/font inyecta en runtime (ver src/fonts/index.ts) — Tailwind no
+   puede inlinearlos en build time. */
+@theme inline {
+  --font-titulo: var(--nf-titulo), sans-serif;
+  --font-editorial: var(--nf-editorial), serif;
+  --font-texto: var(--nf-texto), sans-serif;
+  --font-firma: var(--nf-firma), cursive;
+  --font-firma-alt: var(--nf-firma-alt), cursive;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--hueso);
+    color: var(--cafe-profundo);
+    /* `--font-texto` (definida en @theme inline más arriba) no existe como
+       variable global real — Tailwind solo la inlinea dentro de las
+       utilidades que genera (`font-editorial`, `font-titulo`...). Para CSS
+       escrito a mano hay que apuntar directo a `--nf-texto`, la variable
+       real que next/font inyecta en <body> (ver src/fonts/index.ts). */
+    font-family: var(--nf-texto), sans-serif;
+    text-wrap: pretty;
+  }
+  strong {
+    font-weight: 700;
+    color: var(--cafe-profundo);
+  }
+  :focus-visible {
+    outline: 3px solid var(--terracota-viva);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* ============================================================
+   Botones
+   Los 5 tratamientos de color no se prestan a utilidades Tailwind sueltas
+   porque `.hero .btn--ghost-light` cambia de piel según la sección en la
+   que vive (ver override más abajo) — un solo lugar de verdad para el
+   color evita duplicar esa regla contextual en cada uso.
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--nf-texto), sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1;
+  padding: 18px 34px;
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 52px;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+.btn--primary {
+  background: var(--terracota);
+  border-color: var(--terracota);
+  color: var(--hueso-claro);
+}
+.btn--primary:hover {
+  background: var(--terracota-viva);
+  border-color: var(--terracota-viva);
+  color: var(--hueso-claro);
+}
+.btn--ghost-light {
+  background: transparent;
+  border-color: var(--piedra-calida);
+  color: var(--piedra-calida);
+}
+.btn--ghost-light:hover {
+  background: var(--piedra-calida);
+  color: var(--cafe-profundo);
+}
+.btn--ghost-dark {
+  background: transparent;
+  border-color: var(--cafe-profundo);
+  color: var(--cafe-profundo);
+  font-size: 16px;
+}
+.btn--ghost-dark:hover {
+  background: var(--cafe-profundo);
+  color: var(--hueso);
+}
+.btn--club {
+  background: var(--club-plata);
+  border-color: var(--club-plata);
+  color: var(--club-negro);
+  font-size: 16px;
+}
+.btn--club:hover {
+  background: #fff;
+  border-color: #fff;
+  color: var(--club-negro);
+}
+.btn--block {
+  width: 100%;
+  margin-top: 24px;
+}
+
+/* ============================================================
+   CAPA DE ANIMACIÓN
+   Portada casi verbatim desde el sitio estático original. Son piezas
+   muy afinadas a mano (composición flotante del hero, deriva de nubes,
+   ornamentación en acuarela, línea de progreso del ciclo) que no ganan
+   nada al reexpresarse como utilidades atómicas — el resto de la página
+   sí vive en Tailwind, componente por componente.
+
+   Todo cuelga de `.js-anim`, que un script `beforeInteractive` pone en
+   <html> (ver src/app/layout.tsx). Sin JavaScript la clase nunca
+   aparece y el contenido se ve siempre, sin animar.
+   ============================================================ */
+
+.js-anim [data-reveal]:not(.is-shown),
+.js-anim [data-reveal-group] > *:not(.is-shown),
+.js-anim [data-hero-seq] > *:not(.is-shown),
+.js-anim [data-hero-logo]:not(.is-shown),
+.js-anim [data-ciclo] > li:not(.is-shown) {
+  opacity: 0;
+  transform: translateY(22px);
+}
+.js-anim [data-prod]:not(.is-shown) {
+  opacity: 0;
+  transform: translateY(26px);
+}
+/* El Club solo aparece: no se desplaza. */
+.js-anim [data-reveal-club]:not(.is-shown) {
+  opacity: 0;
+}
+
+/* ---------- Hero: composición flotante de producto ---------- */
+html,
+body {
+  overflow-x: clip;
+}
+
+.hero-stage {
+  position: relative;
+  aspect-ratio: 4 / 5;
+}
+@media (min-width: 980px) {
+  .hero-stage {
+    aspect-ratio: auto;
+    height: 660px;
+  }
+}
+
+.hero-prod {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  z-index: var(--z);
+}
+.hero-prod__inner {
+  rotate: var(--rot);
+  animation: hero-flotar var(--dur) ease-in-out var(--delay) infinite;
+}
+.hero-prod img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes hero-flotar {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(var(--amp) * var(--amp-scale, 1));
+  }
+}
+
+/* Valores base = móvil y tablet (<980). Ligeramente más grandes que el
+   sitio original a petición: en pantallas angostas los mockups se leían
+   demasiado pequeños. Composición y proporciones relativas sin tocar,
+   solo la escala general sube ~10-14 puntos porcentuales. */
+.hero-prod--drip {
+  --x: 46%;
+  --y: -8%;
+  --w: 60%;
+  --z: 1;
+  --rot: -22deg;
+  --dur: 6.5s;
+  --delay: -4s;
+  --amp: -26px;
+}
+.hero-prod--origen70 {
+  --x: 2%;
+  --y: 10%;
+  --w: 64%;
+  --z: 2;
+  --rot: 0deg;
+  --dur: 7s;
+  --delay: 0s;
+  --amp: -22px;
+}
+.hero-prod--esencial {
+  --x: 44%;
+  --y: 24%;
+  --w: 56%;
+  --z: 3;
+  --rot: 0deg;
+  --dur: 8.5s;
+  --delay: -2.5s;
+  --amp: -18px;
+}
+.hero-prod--aguijon {
+  --x: -2%;
+  --y: 58%;
+  --w: 38%;
+  --z: 4;
+  --rot: 0deg;
+  --dur: 7.5s;
+  --delay: -1.5s;
+  --amp: -20px;
+}
+
+.hero-prod--origen70 img {
+  filter: drop-shadow(0 22px 24px rgba(18, 9, 4, 0.55));
+}
+.hero-prod--esencial img {
+  filter: drop-shadow(0 16px 20px rgba(18, 9, 4, 0.45));
+}
+.hero-prod--drip img {
+  filter: drop-shadow(0 14px 18px rgba(18, 9, 4, 0.5));
+}
+.hero-prod--aguijon img {
+  filter: drop-shadow(0 12px 16px rgba(18, 9, 4, 0.5));
+}
+
+/* Composición del referente desde 980px: piezas grandes que sangran
+   fuera de la columna. Idéntica al sitio original — a este ancho el
+   tamaño ya se leía bien. */
+@media (min-width: 980px) {
+  .hero-prod--drip {
+    --x: 58%;
+    --y: -20%;
+    --w: 74%;
+    --rot: -22deg;
+  }
+  .hero-prod--origen70 {
+    --x: -2%;
+    --y: 6%;
+    --w: 80%;
+  }
+  .hero-prod--esencial {
+    --x: 50%;
+    --y: 25%;
+    --w: 64%;
+  }
+  .hero-prod--aguijon {
+    --x: -8%;
+    --y: 60%;
+    --w: 35%;
+  }
+}
+
+/* ---------- Bruma del hero (tres capas de nubes reales) ---------- */
+.bruma {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.bruma--frente {
+  z-index: 2;
+}
+.bruma__capa {
+  position: absolute;
+  left: 0;
+  top: var(--t);
+  width: calc(100% + var(--mosaico));
+  height: calc(var(--mosaico) / var(--aspecto));
+  background: var(--nube) repeat-x;
+  background-size: var(--mosaico) auto;
+  opacity: var(--op);
+  will-change: transform;
+  animation:
+    bruma-deriva var(--dur) linear infinite,
+    bruma-vaiven var(--dur-v) ease-in-out infinite;
+  animation-delay: var(--delay), 0s;
+}
+@keyframes bruma-deriva {
+  from {
+    translate: 0;
+  }
+  to {
+    translate: calc(var(--mosaico) * -1);
+  }
+}
+@keyframes bruma-vaiven {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(var(--bob) * var(--amp-scale, 1)));
+  }
+}
+.bruma__capa--lejos {
+  --nube: url("/images/hero/nubes/nube-1.webp");
+  --aspecto: 3.244;
+  --mosaico: 1700px;
+  --t: -2%;
+  --op: 0.85;
+  --dur: 150s;
+  --delay: 0s;
+  --dur-v: 44s;
+  --bob: 18px;
+}
+.bruma__capa--media {
+  --nube: url("/images/hero/nubes/nube-2.webp");
+  --aspecto: 2.86;
+  --mosaico: 1320px;
+  --t: 26%;
+  --op: 0.72;
+  --dur: 98s;
+  --delay: -40s;
+  --dur-v: 33s;
+  --bob: -24px;
+}
+.bruma__capa--cerca {
+  --nube: url("/images/hero/nubes/nube-3.webp");
+  --aspecto: 3.765;
+  --mosaico: 1080px;
+  --t: 52%;
+  --op: 0.4;
+  --dur: 64s;
+  --delay: -20s;
+  --dur-v: 26s;
+  --bob: 16px;
+}
+@media (max-width: 979px) {
+  .bruma__capa--lejos {
+    --mosaico: 620px;
+  }
+  .bruma__capa--media {
+    --mosaico: 520px;
+  }
+  .bruma__capa--cerca {
+    --mosaico: 430px;
+  }
+}
+
+/* ---------- Montaña del hero ---------- */
+.montana {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.montana img {
+  position: absolute;
+  left: -33%;
+  bottom: -6%;
+  width: 80%;
+  height: auto;
+  display: block;
+}
+@media (max-width: 979px) {
+  .montana img {
+    left: -38%;
+    width: 155%;
+  }
+}
+
+/* ---------- Ornamentación en acuarela (sección Origen) ---------- */
+.decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.decor__rama,
+.decor__abeja {
+  position: absolute;
+  display: block;
+}
+.decor__rama img,
+.decor__abeja img {
+  width: 100%;
+  height: auto;
+}
+.decor__rama {
+  width: clamp(300px, 34vw, 520px);
+  animation: hoja-mecer var(--dur) ease-in-out var(--delay) infinite;
+  transform-origin: var(--pivote);
+  will-change: transform;
+}
+.decor__rama--sup {
+  --dur: 11s;
+  --delay: 0s;
+  --pivote: 0% 0%;
+  top: -2%;
+  left: -8%;
+}
+.decor__rama--inf {
+  --dur: 13s;
+  --delay: -4s;
+  --pivote: 100% 100%;
+  bottom: -3%;
+  right: -8%;
+}
+.decor__rama--inf img {
+  rotate: 180deg;
+}
+.decor__abeja {
+  width: clamp(38px, 3.6vw, 56px);
+  top: 5%;
+  right: 16%;
+  animation: abeja-volar 24s ease-in-out infinite;
+  will-change: transform;
+}
+.decor__abeja-aleteo {
+  display: block;
+  animation: abeja-aletear 1.1s ease-in-out infinite;
+}
+@media (min-width: 1440px) {
+  .decor__abeja {
+    top: 20%;
+    right: 2.5%;
+  }
+}
+@keyframes hoja-mecer {
+  0%,
+  100% {
+    transform: rotate(calc(-0.9deg * var(--amp-scale, 1)));
+  }
+  50% {
+    transform: rotate(calc(0.9deg * var(--amp-scale, 1)));
+  }
+}
+@keyframes abeja-volar {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  14% {
+    transform: translate(calc(-34px * var(--amp-scale, 1)), calc(-14px * var(--amp-scale, 1))) rotate(-7deg);
+  }
+  27% {
+    transform: translate(calc(-13px * var(--amp-scale, 1)), calc(-30px * var(--amp-scale, 1))) rotate(4deg);
+  }
+  41% {
+    transform: translate(calc(28px * var(--amp-scale, 1)), calc(-21px * var(--amp-scale, 1))) rotate(9deg);
+  }
+  55% {
+    transform: translate(calc(46px * var(--amp-scale, 1)), calc(5px * var(--amp-scale, 1))) rotate(3deg);
+  }
+  68% {
+    transform: translate(calc(18px * var(--amp-scale, 1)), calc(25px * var(--amp-scale, 1))) rotate(-5deg);
+  }
+  82% {
+    transform: translate(calc(-22px * var(--amp-scale, 1)), calc(18px * var(--amp-scale, 1))) rotate(-8deg);
+  }
+  93% {
+    transform: translate(calc(-29px * var(--amp-scale, 1)), calc(5px * var(--amp-scale, 1))) rotate(-3deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+@keyframes abeja-aletear {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(calc(-2.5px * var(--amp-scale, 1))) scaleY(0.985);
+  }
+}
+@media (max-width: 979px) {
+  .decor__rama {
+    width: min(52vw, 250px);
+  }
+  .decor__rama--sup {
+    top: 6px;
+    left: -14%;
+  }
+  .decor__rama--inf {
+    bottom: -1%;
+    right: -20%;
+  }
+  .decor__abeja {
+    width: 34px;
+    top: 26px;
+    right: 9%;
+  }
+}
+
+/* ---------- Hero: botón fantasma sobre fondo azul bruma ----------
+   `.btn--ghost-light` se reutiliza en .cta (fondo café profundo, donde su
+   color por defecto es correcto) y aquí en .hero, que tiene fondo claro
+   --niebla: necesita la variante oscura. Es la única pieza de esta migración
+   que todavía se apoya en cascada por ancestro — el resto de los contrastes
+   de texto se resuelven con la prop `variant="onNiebla"` de Eyebrow/Body,
+   más explícito en un árbol de componentes. */
+.hero .btn--ghost-light {
+  border-color: var(--cafe-profundo);
+  color: var(--cafe-profundo);
+}
+.hero .btn--ghost-light:hover {
+  background: var(--cafe-profundo);
+  color: var(--hueso);
+}
+
+/* ---------- Ciclo: línea de progreso con scrub ----------
+   Exclusivo del hero (fondo --niebla), así que los colores van directos,
+   sin capa de override: café profundo da 8.48:1, el mínimo AA es 4.5:1. */
+.ciclo {
+  position: relative;
+  border-top: 1px solid rgba(59, 36, 24, 0.22);
+}
+.ciclo::after {
+  content: "";
+  position: absolute;
+  inset: -44px -48px -56px -260px;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(183, 201, 211, 0.93);
+  --velo-h: linear-gradient(to right, transparent 0%, #000 18%, #000 66%, transparent 80%);
+  --velo-v: linear-gradient(to bottom, transparent 0%, #000 24%, #000 82%, transparent 100%);
+  -webkit-mask-image: var(--velo-h), var(--velo-v);
+  mask-image: var(--velo-h), var(--velo-v);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.js-anim .ciclo::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--cafe-profundo);
+  opacity: 0.55;
+  transform: scaleX(var(--ciclo-p, 0));
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* ---------- Reduced-motion: solo lo intrusivo ----------
+   Se apaga el parallax con scrub; se conserva todo lo demás con el
+   recorrido reducido. Ver el porqué en handoff.md del proyecto original
+   §6 gotcha 8: Windows manda `reduce` de fábrica sin que nadie lo pida. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-prod {
+    --amp-scale: 0.7;
+  }
+  .decor__rama {
+    --amp-scale: 0.6;
+  }
+  .decor__abeja {
+    --amp-scale: 0.34;
+    animation-duration: 38s;
+  }
+  .decor__abeja-aleteo {
+    --amp-scale: 0.5;
+    animation-duration: 1.8s;
+  }
+  .js-anim .ciclo::before {
+    transform: scaleX(1);
+  }
+  /* La bruma quedaba fuera de este bloque: deriva y vaivén sin recortar
+     con reduce activo. Mismo criterio que el resto — no apagar del todo,
+     solo achicar el recorrido y alargar el ciclo. */
+  .bruma__capa {
+    --amp-scale: 0.4;
+    animation-duration:
+      calc(var(--dur) * 3),
+      calc(var(--dur-v) * 2);
+  }
+}
