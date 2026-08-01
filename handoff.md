@@ -1,4 +1,4 @@
-# BRUMA1800 — Migración a Next.js — Handoff de sesión
+a# BRUMA1800 — Migración a Next.js — Handoff de sesión
 
 Estado del trabajo para retomarlo después de un `/clear`. Complementa a `README.md`
 (stack, estructura de carpetas, cómo correr, cómo activar el chatbot) — este
