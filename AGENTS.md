@@ -6,14 +6,25 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # BRUMA1800 — Contexto del proyecto
 
-Este es el proyecto de **migración a Next.js** del sitio estático original
-(`../bruma1800-landing/`). Para el mapa del código (stack, estructura de
-carpetas, cómo correr, chatbot) ver `README.md`. Para la bitácora de qué se
-hizo y por qué en la migración (bugs encontrados, decisiones de arquitectura,
-fix de responsive) ver `handoff.md`. Este archivo es solo marca y datos —
-la fuente de verdad original vive en `../bruma1800-landing/CLAUDE.md` y en
-`../bruma1800-landing/brand-reference/brandbook.html`; lo de abajo es una
-copia para que este proyecto no dependa de tener esa carpeta al lado.
+Este es el proyecto de **migración a Next.js** del sitio estático original.
+Para el mapa del código (stack, estructura de carpetas, cómo correr, chatbot)
+ver `README.md`. Para la bitácora de qué se hizo y por qué en la migración
+(bugs encontrados, decisiones de arquitectura, fix de responsive) ver
+`handoff.md`. Este archivo es solo marca y datos.
+
+> **Este es el proyecto activo.** Decisión del cliente, 3 de agosto de 2026: el
+> trabajo continúa aquí. La versión estática queda como referencia y como
+> respaldo desplegable, y **no debe recibir funcionalidad nueva** — mantener las
+> dos en paralelo ya provocó dos divergencias en un solo día. Verificado el 3 de
+> agosto que esta versión está a la par de aquella: 7/7 enlaces de WhatsApp con
+> texto diferenciado, puntajes SCA `87.5|83.0`, precio de Aguijón y las tres
+> castas, las dos fincas y las dos familias, sin desborde horizontal.
+
+**Ojo con las rutas de este archivo y del `README.md`:** varias apuntan a
+`../bruma1800-landing/`, dando por hecho que el sitio estático está al lado con
+ese nombre. En el equipo del cliente la carpeta se llama `CLAUDE CODE` y cuelga
+de `BRUMA 1800/`, así que esas rutas relativas no resuelven. Los datos de marca
+de abajo son copia completa, precisamente para no depender de ellas.
 
 ## Qué es esto
 
