@@ -34,17 +34,22 @@ en `handoff.md` §2.3.
 | Piedra cálida | `#E8DDC7` | Ancla clara |
 | Naranja cafetero | `#E85A2B` | Acento único — nunca más de un uso por pieza |
 | Verde montaña | `#4A6741` | Apoyo, uso ocasional |
-| Azul bruma | `#B7C9D3` | Atmósfera, nunca como CTA. Es el fondo del hero y de la sección de origen |
+| Azul bruma | `#B7C9D3` | Atmósfera, nunca como CTA. Es el fondo del hero |
 
 El hero **no es ancla oscura**: es azul bruma, con montaña acuarela y tres
-capas de nubes reales, texto en variantes oscuras y logo oscuro. La sección
-de origen sigue el mismo tratamiento, con ornamentación de rama de cafeto y
-una abeja en acuarela. `.calidad` y `.cta` siguen en café profundo.
+capas de nubes reales, texto en variantes oscuras y logo oscuro. `.calidad`
+y `.cta` siguen en café profundo.
+
+La sección de origen se probó en azul bruma y **se revirtió a petición del
+cliente**: su fondo es `--piedra-calida`, el del diseño original. Conserva la
+ornamentación de rama de cafeto y la abeja en acuarela, que no dependen del
+fondo. Al volver al beige dejó de necesitar `variant="onNiebla"` en su texto:
+sobre piedra cálida `--tierra` da 5.02:1 por sí solo.
 
 > **Sobre azul bruma, `--tierra` no vale para cuerpo de texto.** Da 3.95:1,
 > por debajo del mínimo AA de 4.5:1. Usar `--cafe-profundo`, que da 8.48:1.
 > Ya causó un bug real en esta migración (`handoff.md` §3.1) — si alguna
-> sección más cambia a este fondo, es lo primero que hay que revisar.
+> sección cambia a este fondo, es lo primero que hay que revisar.
 
 **Sub-marca Club 1800** (si el proyecto llega a tocarla): paleta propia
 negro/plateado/glow — nunca se mezcla con la paleta principal ni recibe el

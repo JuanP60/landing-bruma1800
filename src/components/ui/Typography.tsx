@@ -2,8 +2,9 @@ import type { ElementType, HTMLAttributes, ReactNode } from "react";
 
 type EyebrowProps = HTMLAttributes<HTMLParagraphElement> & {
   /** `onNiebla`: café profundo (8.48:1) — para texto sobre el fondo azul
-   * bruma del hero y de la sección Origen. `--tierra`, el tono por defecto,
-   * cae a 3.95:1 sobre ese azul y no llega al mínimo AA de 4.5:1. */
+   * bruma, hoy solo el hero. `--tierra`, el tono por defecto, cae a 3.95:1
+   * sobre ese azul y no llega al mínimo AA de 4.5:1. Origen lo usó mientras
+   * se probó en azul y dejó de necesitarlo al volver a piedra cálida. */
   variant?: "default" | "light" | "club" | "onNiebla";
   children: ReactNode;
 };

@@ -12,7 +12,7 @@ export default function Origen() {
   const textRef = useReveal<HTMLDivElement>("group");
 
   return (
-    <section className="origen relative overflow-hidden bg-niebla pt-[160px] pb-20 md:py-28">
+    <section className="origen relative overflow-hidden bg-piedra-calida pt-[160px] pb-20 md:py-28">
       <DecorOrigen />
 
       <Wrap className="relative z-10 grid items-center gap-12 md:grid-cols-2 md:gap-[72px]">
@@ -26,10 +26,13 @@ export default function Origen() {
         />
 
         <div ref={textRef} data-reveal-group>
-          <Eyebrow variant="onNiebla">{origen.eyebrow}</Eyebrow>
+          {/* Sin `variant="onNiebla"`: esta sección volvió a piedra cálida, donde
+              --tierra da 5.02:1 por sí solo. Esa variante existe para compensar el
+              azul bruma y aquí ya no hace falta. */}
+          <Eyebrow>{origen.eyebrow}</Eyebrow>
           <H2Rust>{origen.title}</H2Rust>
           {origen.paragraphs.map((html, i) => (
-            <Body key={i} variant="onNiebla" dangerouslySetInnerHTML={{ __html: html }} />
+            <Body key={i} dangerouslySetInnerHTML={{ __html: html }} />
           ))}
           <ul className="mt-4 grid gap-4 sm:grid-cols-3 sm:gap-5">
             {origen.datos.map((d) => (

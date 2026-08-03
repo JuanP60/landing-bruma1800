@@ -83,6 +83,26 @@ composición de escritorio (≥980px) ni el orden de apilamiento.
 - `.env.example` documenta el contrato exacto (`{message, sessionId, history,
   source}` → `{reply}}`) para cuando se construya el workflow en n8n.
 
+### 2.5 Sincronización con el sitio original: origen vuelve a piedra cálida
+
+La migración se hizo mientras el sitio estático tenía la sección de origen en
+**azul bruma**. Ese fondo se probó para replicar un comparativo y el cliente lo
+**revirtió** poco después: vuelve a `--piedra-calida`, el del diseño original.
+Aquí se aplicó lo mismo, para que las dos versiones no diverjan:
+
+- `Origen.tsx`: `bg-niebla` → `bg-piedra-calida`.
+- `Origen.tsx`: fuera `variant="onNiebla"` del `Eyebrow` y de los `Body`. Ese
+  override existía solo para compensar el azul; sobre piedra cálida `--tierra`
+  da **5.02:1** por sí solo y el H2 en café profundo **10.75:1**.
+- La variante `onNiebla` **se queda** en `Typography.tsx`: el hero la sigue
+  usando. Solo se corrigió su comentario, que decía que servía a las dos.
+
+Lo demás de la sección **no se toca**: la ornamentación de rama y abeja, sus
+animaciones y el `pt-[160px]` de móvil son independientes del color de fondo.
+Ese padding, en concreto, no es decorativo: sin él las hojas quedan detrás del
+eyebrow y el contraste cae (medido en el original: 2.55:1 a 390px y 1.21:1 a
+768px). Las hojas son verde oscuro, así que eso pasa con cualquier fondo.
+
 ---
 
 ## 3. Bugs encontrados y corregidos en esta sesión
