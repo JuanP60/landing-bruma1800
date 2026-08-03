@@ -89,7 +89,7 @@ export const cards: Array<{
       { label: "2.500 g", value: "$150.000 COP" },
     ],
     whatsapp: whatsappLinks.esencial,
-    image: "/images/pending/producto-esencial.jpg",
+    image: "/images/products/esencial.webp",
     imageAlt: "Bolsa de café Esencial de BRUMA1800",
   },
   {
@@ -104,7 +104,7 @@ export const cards: Array<{
       { label: "2.500 g", value: "$190.000 COP" },
     ],
     whatsapp: whatsappLinks.origen70,
-    image: "/images/pending/producto-origen70.jpg",
+    image: "/images/products/origen70.webp",
     imageAlt: "Bolsa de café Origen 70 de BRUMA1800",
   },
   {
@@ -118,8 +118,8 @@ export const cards: Array<{
       { label: "Paquete x10", value: "$30.000 COP" },
     ],
     whatsapp: whatsappLinks.drip,
-    image: "/images/pending/producto-drip.jpg",
-    imageAlt: "Drip coffee de BRUMA1800 preparándose en taza",
+    image: "/images/products/drip.webp",
+    imageAlt: "Sachets de Drip Coffee de BRUMA1800",
   },
 ];
 

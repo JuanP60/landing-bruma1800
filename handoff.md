@@ -103,6 +103,35 @@ Ese padding, en concreto, no es decorativo: sin él las hojas quedan detrás del
 eyebrow y el contraste cae (medido en el original: 2.55:1 a 390px y 1.21:1 a
 768px). Las hojas son verde oscuro, así que eso pasa con cualquier fondo.
 
+### 2.6 Los cinco huecos de foto
+
+La página tenía **cinco rectángulos planos de `--gris-calido`** donde faltaban
+fotos: tres en el portafolio, uno en Origen y uno en Club. Ocupaban cerca de un
+tercio del alto y se leían como imagen rota, no como contenido por llegar. La
+regla de marca prohíbe fotografía de stock, así que rellenarlos no era opción.
+
+Se resolvió por dos caminos distintos, según lo que había disponible:
+
+**Las tres del portafolio ya tenían sustituto legítimo.** Las tarjetas son de
+Esencial, Origen 70 y Drip Coffee, y los renders transparentes de esos tres
+productos ya estaban en el proyecto — solo se usaban en el hero. Ahora
+`content.ts` apunta a `/images/products/*.webp` y `MediaFrame` los pinta con
+`fit="contain"` sobre un panel de piedra cálida, con la misma sombra propia que
+las piezas del hero. No es stock: es el producto real de la marca.
+
+**Las otras dos no lo tenían**, así que se diseñó el hueco en vez de taparlo.
+`MediaFrame` compone un panel con la marca de montaña al 10% de opacidad, que se
+lee como «foto por venir». Respeta la regla de contraste del brandbook — variante
+oscura sobre fondo claro en Origen, clara sobre oscuro en Club — y la prop
+`vacio="club"` mantiene esa sección dentro de su paleta propia, que no se mezcla
+con la principal.
+
+El fallback por `onError` se conserva: en cuanto los archivos reales aparezcan en
+`public/images/pending/`, la foto tapa el panel sin tocar una línea de código.
+
+Medido en 390/768/1280/1440/1920: **10/10** imágenes de producto cargadas, 2
+paneles de hueco, **0 imágenes rotas visibles** (antes 5) y sin desborde.
+
 ---
 
 ## 3. Bugs encontrados y corregidos en esta sesión

@@ -7,7 +7,18 @@ type ProductCardProps = (typeof cards)[number];
 export default function ProductCard({ kicker, title, desc, precios, whatsapp, image, imageAlt }: ProductCardProps) {
   return (
     <article className="overflow-hidden rounded-2xl border border-cafe-profundo/14 bg-hueso-claro transition-[transform,box-shadow,border-color] duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-[3px] hover:border-cafe-profundo/24 hover:shadow-[0_18px_40px_-24px_rgba(59,36,24,.45)]">
-      <MediaFrame src={image} alt={imageAlt} aspectClassName="aspect-[4/3]" radiusClassName="rounded-none" sizes="(min-width: 980px) 33vw, (min-width: 720px) 50vw, 100vw" />
+      {/* Render transparente del propio producto, no fotografía. Los tres
+          mockups ya existían y solo se usaban en el hero; aquí ahorran la
+          espera de las fotos reales sin recurrir a banco de imágenes, que la
+          marca prohíbe. `contain` porque van recortados a su alfa. */}
+      <MediaFrame
+        src={image}
+        alt={imageAlt}
+        aspectClassName="aspect-[4/3]"
+        radiusClassName="rounded-none"
+        fit="contain"
+        sizes="(min-width: 980px) 33vw, (min-width: 720px) 50vw, 100vw"
+      />
       <div className="p-8">
         <p className="font-editorial mb-2.5 text-sm tracking-[0.1em] text-verde-hoja uppercase italic">{kicker}</p>
         <h3 className="font-titulo mb-3.5 text-[32px] text-cafe-profundo">{title}</h3>

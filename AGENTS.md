@@ -129,7 +129,9 @@ Evitar: anglicismos innecesarios, superlativos vacíos, tono corporativo genéri
 - [x] Chatbot n8n con scaffold listo (`ChatbotWidget.tsx` + `/api/chat`),
   falta configurar `N8N_WEBHOOK_URL`
 - [x] Auditoría de Web Interface Guidelines (Vercel) completa, 6 fixes aplicados
-- [ ] 5 fotos reales pendientes (specs en `README.md` del sitio original)
+- [ ] Fotos reales. Las 3 del portafolio **ya no bloquean**: esas tarjetas usan los
+  renders del propio producto. Quedan `finca-familia.jpg` y `club-tarjeta.jpg`, que no
+  tienen sustituto y hoy muestran un panel de marca en vez de un hueco
 - [ ] Testimonios reales pendientes
 - [x] `@bruma1800_cafe` **confirmada por el cliente** (3 de agosto de 2026) como la
   cuenta oficial. Vive en `INSTAGRAM_HANDLE` de `src/lib/content.ts` y de ahí sale a

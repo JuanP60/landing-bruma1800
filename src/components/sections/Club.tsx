@@ -25,6 +25,9 @@ export default function Club() {
             {club.cta}
           </Button>
         </div>
+        {/* La foto de la tarjeta aún no existe. `vacio="club"` mantiene el hueco
+            dentro de la paleta propia del Club — negro y plata —, que el
+            brandbook prohíbe mezclar con la principal. */}
         <MediaFrame
           data-reveal-club
           src={club.image}
@@ -32,6 +35,7 @@ export default function Club() {
           aspectClassName="aspect-[4/5] md:aspect-auto md:h-[520px]"
           radiusClassName="rounded-2xl"
           className="border border-club-plata/15"
+          vacio="club"
           sizes="(min-width: 980px) 45vw, 100vw"
         />
       </Wrap>
