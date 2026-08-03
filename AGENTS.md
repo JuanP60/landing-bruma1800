@@ -131,6 +131,8 @@ Evitar: anglicismos innecesarios, superlativos vacíos, tono corporativo genéri
 - [x] Auditoría de Web Interface Guidelines (Vercel) completa, 6 fixes aplicados
 - [ ] 5 fotos reales pendientes (specs en `README.md` del sitio original)
 - [ ] Testimonios reales pendientes
-- [ ] Verificar que `@bruma1800_cafe` sea la cuenta correcta de Instagram
+- [x] `@bruma1800_cafe` **confirmada por el cliente** (3 de agosto de 2026) como la
+  cuenta oficial. Vive en `INSTAGRAM_HANDLE` de `src/lib/content.ts` y de ahí sale a
+  Club, CTA final y footer — si algún día cambia, se toca en un solo sitio
 - [ ] Elegir hosting con runtime Node (Hostinger compartido no sirve para
   esto) y desplegar
