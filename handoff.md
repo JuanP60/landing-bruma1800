@@ -1,33 +1,55 @@
-a# BRUMA1800 — Migración a Next.js — Handoff de sesión
+# BRUMA1800 — Migración a Next.js — Handoff de sesión
 
 Estado del trabajo para retomarlo después de un `/clear`. Complementa a `README.md`
 (stack, estructura de carpetas, cómo correr, cómo activar el chatbot) — este
 documento es la bitácora de **qué se hizo y por qué**, no el mapa del código.
 
-**Última actualización:** sesión del 31 de julio de 2026.
+**Última actualización:** 3 de agosto de 2026. Recoge dos sesiones: la migración
+inicial (31 de julio) y la de diseño del 3 de agosto, en la que este proyecto
+pasó a ser **el activo** — ver §2.5.
 
 ---
 
 ## 1. Arranque rápido
 
 ```powershell
-cd "Desktop\Proyectos con Claude Code\Migracion-bruma1800"
-npm install
-npm run build && npm run start -- -p 3300   # o npm run dev para desarrollo
+cd "C:\Users\juane\Desktop\PROYECTOS\BRUMA 1800\landing-bruma1800"
+npm ci
+npm run build
+npm run start          # http://localhost:3000
 ```
 
-Abrir <http://localhost:3300/>. A diferencia del sitio estático original, este
-sí sirve bien sobre HMR/dev server — no hace falta levantar Python.
+`npm run dev` sirve para trabajar, pero **verificar siempre contra el build de
+producción**: el optimizador de imágenes y el CSS de Tailwind se comportan
+distinto en dev, y varios de los bugs de §2.6 y §2.7 solo se ven en `start`.
+
+En el equipo del cliente las dependencias ya están instaladas. Ocupan 419 MB de
+los 430 del proyecto, así que si hace falta espacio se puede borrar
+`node_modules` sin miedo y restaurarlo con `npm ci`.
+
+> **Si cambia un archivo de `public/` y no ve el cambio, borre `.next`.** Next
+> cachea en `.next/cache/images` todo lo que optimiza, con 4 horas de vida, y la
+> URL no cambia al cambiar el archivo. Costó un rato de sospechar del archivo
+> equivocado; el detalle está en §2.7.
 
 ---
 
-## 2. Qué se hizo en esta sesión
+## 2. Qué se hizo
 
-Partiendo de `../bruma1800-landing/dist/` (el sitio estático terminado, ver su
-propio `handoff.md`), se migró todo a una base de código en React con el
-objetivo de que fuera **visualmente idéntica** salvo un fix de responsive
-pedido explícitamente, y quedara lista para dos cosas que el HTML/CSS/JS plano
-no permitía bien: un chatbot conectado a n8n y crecimiento futuro del sitio.
+Los apartados 2.1 a 2.4 son de la migración inicial; del 2.5 en adelante, de la
+sesión de diseño del 3 de agosto.
+
+Partiendo del sitio estático terminado, se migró todo a una base de código en
+React con el objetivo de que fuera **visualmente idéntica** salvo un fix de
+responsive pedido explícitamente, y quedara lista para dos cosas que el
+HTML/CSS/JS plano no permitía bien: un chatbot conectado a n8n y crecimiento
+futuro del sitio.
+
+> **Ojo con las rutas de este documento y del `README.md`.** Varias apuntan a
+> `../bruma1800-landing/`, dando por hecho que el sitio estático está al lado con
+> ese nombre. En el equipo del cliente esa carpeta se llama **`CLAUDE CODE`** y
+> cuelga de `BRUMA 1800/`, así que esas rutas relativas no resuelven. Los datos
+> de marca están copiados enteros en `AGENTS.md` justo para no depender de ellas.
 
 ### 2.1 Scaffold y stack
 
@@ -39,9 +61,10 @@ no permitía bien: un chatbot conectado a n8n y crecimiento futuro del sitio.
   afinadas a mano con valores muy específicos (recorridos de flotación,
   velocidad de deriva de nubes, aleteo de abeja) — reescribirlas en otra
   librería era el mayor riesgo de fidelidad de toda la migración.
-- Las 5 fuentes de marca se copiaron desde `../bruma1800-landing/dist/fonts/`
+- Las 5 fuentes de marca se copiaron del `dist/fonts/` del sitio estático
   (los WOFF2 ya optimizados, con Suranna ya reparada) a `src/fonts/` y se
-  cargan con `next/font/local`.
+  cargan con `next/font/local`. En el equipo del cliente ese sitio está en
+  `../CLAUDE CODE/`, no en `../bruma1800-landing/`.
 - Assets (`montana.webp`, nubes, productos, decor, logos) copiados a
   `public/images/`, organizados por carpeta en vez del `assets/img/` plano
   del original.
@@ -207,7 +230,7 @@ quedó sin uso y se eliminó.
 
 ---
 
-## 3. Bugs encontrados y corregidos en esta sesión
+## 3. Bugs encontrados y corregidos en la migración
 
 Dos rondas de QA después del primer build: una comparando colores contra el
 original, otra comparando fuentes. Ambas encontraron bugs reales, no
@@ -300,31 +323,76 @@ proyecto original y no es terreno de esta migración.
 
 ## 5. Cómo verificar
 
-No hay scripts de medición dedicados como en el sitio original (`tools/*.mjs`
-con CDP) — para esta sesión se usó Playwright ad hoc contra el build de
-producción:
+`npm run build` y `npx eslint src --max-warnings=0` son el mínimo, pero **no
+bastan**: casi todos los bugs de estas dos sesiones compilaban perfectamente.
+Lo que los encontró fue medir en un navegador de verdad.
+
+### Herramientas de la casa
+
+En `tools/` hay scripts Python para preparar imágenes, con el mismo criterio de
+recorte-a-alfa que el sitio original:
 
 ```powershell
-npm run build
-npm run start -- -p 3300
+python tools/optimizar-tarjeta.py assets-fuente/tarjeta-club-1800.png public/images/club/tarjeta-1800.webp
 ```
 
-Luego, con un script Node cualquiera que importe
-`node_modules/@playwright/mcp/node_modules/playwright` (o instalar
-`playwright` como dependencia si se va a repetir seguido), se puede:
+`assets-fuente/` guarda los originales que entrega el cliente. Queda **fuera de
+`public/`** a propósito: son material de trabajo, no se sirven.
 
-- Recorrer la página con scroll incremental antes de capturar full-page
-  (los reveals son `ScrollTrigger` con `once:true`, si no se dispara scroll
-  primero la captura sale con secciones en blanco).
-- Auditar `getComputedStyle(el).fontFamily` / `.cursor` / `.overscrollBehaviorY`
-  por elemento — más confiable que releer el JSX, como demostró el bug de
-  §3.2.
+### Medir en el navegador
+
+Chrome con CDP abierto, igual que en el proyecto original:
+
+```powershell
+Start-Process "C:\Program Files\Google\Chrome\Application\chrome.exe" `
+  -ArgumentList '--headless','--disable-gpu','--hide-scrollbars', `
+                '--remote-debugging-port=9222',"--user-data-dir=$env:TEMP\cdp",'about:blank'
+```
+
+Cuatro cosas aprendidas a base de tropezar, que valen para cualquier medición
+futura de este proyecto:
+
+- **Mandar `Network.setCacheDisabled`.** Sin eso el perfil persistente sirve
+  CSS viejo y una medición sale idéntica tras un cambio real.
+- **Recorrer la página con scroll antes de capturar.** Los reveals son
+  `ScrollTrigger` con `once:true`; sin scroll previo las secciones salen en
+  blanco.
+- **Auditar `getComputedStyle` por elemento, no releer el JSX.** Así apareció el
+  bug de §3.2, donde ~20 elementos caían al font stack del sistema y el código
+  parecía correcto.
+- **No fiarse de las duraciones declaradas: cronometrar el movimiento.** Para
+  comparar el destello automático con el del cursor (§2.7) hubo que medir cuánto
+  tarda en cruzar, no leer `animation-duration`. Y esperar a que el bucle esté en
+  reposo antes de meter el cursor: si entra a media pasada, la posición salta
+  atrás al reiniciar y la ventana de medida abarca dos tramos, dando ~1630 ms que
+  no son reales frente a los 1062 correctos.
+
+### Cifras de referencia al cierre
+
+- **10/10** imágenes de producto cargadas en 390, 768, 1280, 1440 y 1920 px.
+- **0** imágenes rotas visibles y **0** desborde horizontal en esos cinco anchos.
+- **1** panel de hueco, el de `finca-familia.jpg`.
+- 7/7 enlaces de WhatsApp a `573152103231`, con `?text=` diferenciado por sección.
+- Puntajes SCA `87.5|83.0`.
+- Destello: cruza en **1062 ms** solo y **1067 ms** con el cursor encima.
 
 ---
 
 ## 6. Pendientes
 
-Ver `README.md` §"Pendientes" para la lista completa (fotos reales,
-testimonios, conectar `N8N_WEBHOOK_URL`, elegir hosting con runtime Node).
-Nada de esta sesión quedó a medias — build, lint y la auditoría WIG están
-limpios al cierre.
+Nada quedó a medias: build, ESLint y la auditoría WIG están limpios al cierre.
+Lo que falta depende de material o de decisiones del cliente:
+
+- [ ] **Una foto real**, `finca-familia.jpg`, en `public/images/pending/`. Las
+      tres del portafolio ya no bloquean — usan los renders del propio producto
+      (§2.6) — y la del Club se resolvió con la tarjeta (§2.7). Ese único hueco
+      muestra hoy un panel de marca, no un rectángulo vacío.
+- [ ] **Testimonios reales.** La sección sigue sin existir a propósito; no
+      rellenar con texto inventado.
+- [ ] **Conectar `N8N_WEBHOOK_URL`.** El chatbot tiene el scaffold listo y
+      responde con un mensaje de respaldo mientras no exista la variable.
+- [ ] **Elegir hosting con runtime Node** y desplegar. Hostinger compartido, que
+      era el destino del sitio estático, no sirve: `/api/chat` necesita servidor.
+
+Confirmado y cerrado el 3 de agosto: `@bruma1800_cafe` es la cuenta oficial de
+Instagram, y el fondo de la sección de origen vuelve a piedra cálida.

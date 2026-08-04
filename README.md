@@ -1,14 +1,20 @@
 # BRUMA1800 — Migración a Next.js
 
 Reimplementación en Next.js + React + TypeScript + Tailwind del sitio estático
-en `../bruma1800-landing/dist/`, con el mismo diseño, tipografía y animaciones
-— pixel por pixel salvo el fix de tamaño de móvil descrito abajo. El objetivo
-de esta migración es tener una base de código escalable (componentes,
-tipado, contenido centralizado) sobre la que construir el chatbot de n8n y
-futuras features, cosa que el HTML/CSS/JS plano original no ofrecía.
+original, con el mismo diseño, tipografía y animaciones — pixel por pixel salvo
+el fix de tamaño de móvil descrito abajo. El objetivo de esta migración es tener
+una base de código escalable (componentes, tipado, contenido centralizado) sobre
+la que construir el chatbot de n8n y futuras features, cosa que el HTML/CSS/JS
+plano original no ofrecía.
 
-`bruma1800-landing/CLAUDE.md` sigue siendo la fuente de verdad de marca,
-precios y hechos verificados — este README es solo el mapa del código.
+**Este es el proyecto activo** desde el 3 de agosto de 2026, por decisión del
+cliente. El sitio estático queda como referencia y respaldo desplegable, y no
+debe recibir funcionalidad nueva.
+
+La fuente de verdad de marca, precios y hechos verificados es **`AGENTS.md`**,
+que trae una copia completa para no depender de tener el proyecto original al
+lado. Este README es solo el mapa del código; la bitácora de qué se hizo y por
+qué está en `handoff.md`.
 
 ## Stack
 
@@ -105,15 +111,17 @@ Para activarlo:
 
 No hace falta tocar código en el front ni en `/api/chat` para prenderlo.
 
-## Pendientes (heredados del sitio original, ver `bruma1800-landing/CLAUDE.md`)
+## Pendientes
 
-- 5 fotos reales: colocarlas en `public/images/pending/` con el mismo nombre
-  de archivo que ya referencia `lib/content.ts` (`finca-familia.jpg`,
-  `producto-esencial.jpg`, `producto-origen70.jpg`, `producto-drip.jpg`,
-  `club-tarjeta.jpg`) y aparecen solas, sin cambiar código.
-- Testimonios reales — sección deliberadamente ausente, no rellenar con citas inventadas.
-- Conectar `N8N_WEBHOOK_URL` cuando el workflow esté listo.
-- Elegir hosting: este proyecto necesita un runtime Node (por `/api/chat` y
-  por `next/image`) — Hostinger compartido, donde vive el sitio estático
-  actual, no sirve para esto. Vercel es la ruta de menor fricción; cualquier
-  otro host con soporte Node.js también funciona.
+Lista completa y al día en `handoff.md` §6. En resumen:
+
+- **Una foto real**, `finca-familia.jpg`, en `public/images/pending/`. Aparece
+  sola al colocarla, sin tocar código. Las tres del portafolio ya no bloquean
+  —usan los renders del propio producto— y la del Club se resolvió con la
+  tarjeta que aportó el cliente.
+- **Testimonios reales** — sección deliberadamente ausente, no rellenar con
+  citas inventadas.
+- **Conectar `N8N_WEBHOOK_URL`** cuando el workflow esté listo.
+- **Elegir hosting con runtime Node** (por `/api/chat` y por `next/image`).
+  Hostinger compartido, destino del sitio estático, no sirve para esto. Vercel
+  es la ruta de menor fricción; cualquier host con soporte Node también vale.
