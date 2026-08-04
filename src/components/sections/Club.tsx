@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Wrap from "@/components/ui/Wrap";
 import Button from "@/components/ui/Button";
-import MediaFrame from "@/components/ui/MediaFrame";
 import { Eyebrow } from "@/components/ui/Typography";
 import { useClubReveal } from "@/hooks/useClubReveal";
 import { club, INSTAGRAM_URL } from "@/lib/content";
@@ -25,19 +25,21 @@ export default function Club() {
             {club.cta}
           </Button>
         </div>
-        {/* La foto de la tarjeta aún no existe. `vacio="club"` mantiene el hueco
-            dentro de la paleta propia del Club — negro y plata —, que el
-            brandbook prohíbe mezclar con la principal. */}
-        <MediaFrame
-          data-reveal-club
-          src={club.image}
-          alt={club.imageAlt}
-          aspectClassName="aspect-[4/5] md:aspect-auto md:h-[520px]"
-          radiusClassName="rounded-2xl"
-          className="border border-club-plata/15"
-          vacio="club"
-          sizes="(min-width: 980px) 45vw, 100vw"
-        />
+        {/* La tarjeta va recortada sobre el fondo, no dentro de un recuadro con
+            borde: es un objeto, no una fotografía enmarcada. Sin animación de
+            flotación a propósito — el Club tiene lenguaje propio, fade largo y
+            sin desplazamiento, y no recibe el tratamiento del resto de la
+            página. La sombra la separa del negro sin necesidad de moverla. */}
+        <figure data-reveal-club className="relative">
+          <Image
+            src={club.image}
+            alt={club.imageAlt}
+            width={1200}
+            height={704}
+            sizes="(min-width: 980px) 45vw, 92vw"
+            className="h-auto w-full drop-shadow-[0_28px_45px_rgba(0,0,0,0.85)]"
+          />
+        </figure>
       </Wrap>
     </section>
   );

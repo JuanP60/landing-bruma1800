@@ -132,6 +132,39 @@ El fallback por `onError` se conserva: en cuanto los archivos reales aparezcan e
 Medido en 390/768/1280/1440/1920: **10/10** imágenes de producto cargadas, 2
 paneles de hueco, **0 imágenes rotas visibles** (antes 5) y sin desborde.
 
+### 2.7 La tarjeta del Club, recortada de su render
+
+El cliente aportó un render de la tarjeta de fidelización y, aparte, un `.obj`
+con su modelo 3D. **El modelo no hizo falta**: se comprobó que llega sin
+texturas (`map=no` en los tres materiales), es decir, una tarjeta en blanco. El
+render, en cambio, ya trae el arte. Los dos quedan en `assets-fuente/` por si
+algún día se quiere otro ángulo — el modelo sí tiene las UV desplegadas de 0 a 1,
+así que aceptaría una textura sin tocar geometría.
+
+Recortar el render tuvo su trabajo, y por eso hay un script con las medidas
+dentro: `tools/recortar-tarjeta.py`. Dos problemas encadenados:
+
+- **El interior de la tarjeta es casi blanco**, igual que el fondo. Borrar por
+  color se la lleva entera. Se rellena por inundación desde las esquinas, que
+  solo alcanza el blanco conectado con el exterior.
+- **El reflejo del suelo va soldado al canto inferior.** Comparten borde y
+  ningún umbral los separa; subir la tolerancia empezaba a comerse el filo antes
+  de limpiar el reflejo. Hace falta cortar por geometría, con un polígono.
+
+Las coordenadas del polígono están **medidas, no estimadas**: el filo derecho
+baja de (1418,270) a (1309,740) y el inferior sube de (200,722) a (800,811); el
+cruce de ambas rectas da el vértice inferior derecho en (1273,879) — unos 40 px
+más abajo de lo que parecía a ojo, que era justo por donde se colaba el reflejo.
+
+En `Club.tsx` la tarjeta va suelta sobre el fondo, sin marco ni borde: es un
+objeto, no una fotografía enmarcada. **Sin animación de flotación a propósito** —
+el Club tiene lenguaje propio (fade largo, sin desplazamiento) y `AGENTS.md`
+prohíbe darle el tratamiento del resto de la página. La separa del negro una
+sombra, no el movimiento.
+
+Al dejar de usarse el hueco del Club, la variante `vacio="club"` de `MediaFrame`
+quedó sin uso y se eliminó en el mismo commit.
+
 ---
 
 ## 3. Bugs encontrados y corregidos en esta sesión

@@ -171,8 +171,8 @@ export const club = {
   text: "La altitud de la finca y una hora del día leídas en el mismo número. Tarjeta de membresía, bienvenida al club y drops exclusivos para gente que entiende del origen y la tradición.",
   nota: "Aún no está abierto. Se avisa por Instagram.",
   cta: "Seguir en Instagram",
-  image: "/images/pending/club-tarjeta.jpg",
-  imageAlt: "Tarjeta de membresía del Club 1800",
+  image: "/images/club/tarjeta-1800.webp",
+  imageAlt: "Tarjeta de membresía del Club 1800: acabado metalizado con la hora 18:00 y la marca de montaña",
 };
 
 export const ctaFinal = {

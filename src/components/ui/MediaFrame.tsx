@@ -14,9 +14,6 @@ type MediaFrameProps = {
   /** `cover` para fotografía; `contain` para los renders de producto, que son
    *  PNG recortados a su alfa y hay que dejarlos respirar dentro del marco. */
   fit?: "cover" | "contain";
-  /** Paleta del estado vacío. `club` para la sección Club 1800, que tiene
-   *  paleta propia y no se mezcla con la principal. */
-  vacio?: "calido" | "club";
   ref?: Ref<HTMLElement>;
   [dataAttr: `data-${string}`]: string | boolean | undefined;
 };
@@ -28,8 +25,8 @@ type MediaFrameProps = {
  * sobre un panel de marca, con la misma sombra propia que usan las piezas del
  * hero. No necesita estado vacío porque el archivo siempre existe.
  *
- * **Fotografía** (`fit="cover"`, por defecto): dos de estas fotos todavía no
- * existen. Antes, al fallar la carga, quedaba un rectángulo plano de
+ * **Fotografía** (`fit="cover"`, por defecto): queda una sola foto pendiente,
+ * la de la finca. Antes, al fallar la carga, quedaba un rectángulo plano de
  * `--gris-calido` que se leía como imagen rota. Ahora el hueco es un panel
  * compuesto con la marca de montaña al 10% — se lee como «foto por venir», que
  * es lo que es. En cuanto el archivo aparezca en `public/images/pending/`,
@@ -47,18 +44,12 @@ export default function MediaFrame({
   className = "",
   radiusClassName = "rounded-2xl",
   fit = "cover",
-  vacio = "calido",
   ref,
   ...dataAttrs
 }: MediaFrameProps) {
   const [roto, setRoto] = useState(false);
   const esRender = fit === "contain";
-
-  const fondo = esRender
-    ? "bg-piedra-calida"
-    : vacio === "club"
-      ? "bg-club-negro"
-      : "bg-arena";
+  const fondo = esRender ? "bg-piedra-calida" : "bg-arena";
 
   return (
     <figure
@@ -71,7 +62,7 @@ export default function MediaFrame({
       {!esRender && (
         <span aria-hidden="true" className="absolute inset-0 grid place-items-center">
           <Image
-            src={vacio === "club" ? "/images/logo/marca-montana-claro.png" : "/images/logo/marca-montana-oscuro.png"}
+            src="/images/logo/marca-montana-oscuro.png"
             alt=""
             width={200}
             height={200}
