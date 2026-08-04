@@ -168,9 +168,32 @@ objeto, no la sección: el texto y el botón siguen entrando con su fade largo.
   34% del ancho. El primer intento la puso al 30% (84% del ancho) y no se leía
   como destello: subía el brillo de toda la superficie a la vez y lavaba la
   impresión. Un reflejo especular es estrecho.
+- **Ciclo de 4,5 s** y, en punteros finos, **un barrido inmediato al pasar el
+  cursor** (`tarjeta-brillo-cursor`, 0,85 s, una sola pasada). Funciona porque
+  cambiar el `animation-name` reinicia la animación desde cero, así que responde
+  a cada pasada del ratón por rápida que sea. En táctil no hay hover y el bucle
+  de fondo cumple solo.
 - Con `reduce`, la flotación baja a 8 px en 14 s y el brillo a 0,45 de opacidad
-  en 20 s. El destello es lo más parecido a un parpadeo que hay en la página, así
+  en 12 s. El destello es lo más parecido a un parpadeo que hay en la página, así
   que ahí `reduce` sí tiene razón — pero no se apaga, se atenúa.
+
+**Dos trampas que costaron tiempo aquí:**
+
+**La imagen vieja se quedó servida.** Al sustituir el archivo por el que trajo
+alfa, la página seguía mostrando el recorte anterior. No era el recorte: Next
+guarda en `.next/cache/images` las imágenes que optimiza, con **4 h de vida**, y
+la URL no cambia al cambiar el archivo. Si se reemplaza un asset de `public/` y
+no se ve el cambio, **borrar `.next` antes de sospechar del archivo**.
+
+**`loading="lazy"` no llegaba a disparar en esta imagen.** Entera dentro del
+viewport, con scroll de rueda real y diez segundos de espera, seguía en
+`complete:false` y sin una sola petición de red — mientras las demás imágenes
+perezosas de la página cargaban bien. Se descartaron por medición el contenedor
+animado, el `will-change`, el `filter: drop-shadow` y el `srcset`: copias
+inyectadas con cada uno de esos rasgos sí cargaban. **La causa exacta quedó sin
+aislar**, así que la imagen va con `loading="eager"`. Cuesta 85 KB por
+adelantado; el precio de equivocarse al otro lado es que la sección se quede sin
+su único objeto.
 
 Al dejar de usarse el hueco del Club, la variante `vacio="club"` de `MediaFrame`
 quedó sin uso y se eliminó.

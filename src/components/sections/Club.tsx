@@ -33,11 +33,21 @@ export default function Club() {
             de la imagen no existe, y como hermano puede mezclarse en `screen`
             usando la propia tarjeta como máscara. */}
         <figure data-reveal-club className="tarjeta-club">
+          {/* `loading="eager"` a conciencia. Con la carga perezosa por defecto,
+              esta imagen concreta no llegaba a pedirse nunca: entera dentro del
+              viewport, con scroll de rueda real y diez segundos de espera,
+              seguía en `complete:false` y sin una sola petición de red. Se
+              descartaron por medición el contenedor animado, el `will-change`,
+              el `filter` y el `srcset` — copias inyectadas con cada uno de esos
+              rasgos sí cargaban. La causa exacta quedó sin aislar.
+              Cuesta 85 KB por adelantado; el precio de equivocarse al otro lado
+              es que la sección se quede sin su único objeto. */}
           <Image
             src={club.image}
             alt={club.imageAlt}
             width={1200}
             height={708}
+            loading="eager"
             sizes="(min-width: 980px) 45vw, 92vw"
           />
           <span className="tarjeta-club__brillo" aria-hidden="true" />

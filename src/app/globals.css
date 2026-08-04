@@ -667,7 +667,26 @@ body {
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  animation: tarjeta-brillo 8s ease-in-out infinite;
+  animation: tarjeta-brillo 4.5s ease-in-out infinite;
+}
+
+/* Al pasar el cursor, el destello cruza al momento y una sola vez. Funciona
+   porque cambia el `animation-name`: eso reinicia la animación desde cero, así
+   que responde a cada pasada del ratón por rápida que sea. Solo en punteros
+   finos — en táctil no hay hover y el bucle de fondo ya cumple. */
+@media (hover: hover) and (pointer: fine) {
+  .tarjeta-club:hover .tarjeta-club__brillo {
+    animation: tarjeta-brillo-cursor 0.85s ease-out;
+  }
+}
+
+@keyframes tarjeta-brillo-cursor {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -60% 0;
+  }
 }
 
 @keyframes tarjeta-flotar {
@@ -680,8 +699,9 @@ body {
   }
 }
 
-/* El destello cruza una vez y descansa: de 0 a 45% barre, y el resto del ciclo
-   se queda fuera de cuadro. Un brillo que va y viene sin parar parece un GIF. */
+/* El destello cruza y descansa: de 0 a 45% barre, y el resto del ciclo se queda
+   fuera de cuadro. Ese reposo es lo que lo salva de parecer un GIF; sin él, un
+   brillo yendo y viniendo sin parar cansa a los diez segundos. */
 @keyframes tarjeta-brillo {
   0% {
     background-position: 150% 0;
@@ -720,7 +740,7 @@ body {
   }
   .tarjeta-club__brillo {
     --brillo-op: 0.45;
-    animation-duration: 20s;
+    animation-duration: 12s;
   }
   .js-anim .ciclo::before {
     transform: scaleX(1);
