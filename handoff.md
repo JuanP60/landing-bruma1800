@@ -121,49 +121,59 @@ las piezas del hero. No es stock: es el producto real de la marca.
 
 **Las otras dos no lo tenían**, así que se diseñó el hueco en vez de taparlo.
 `MediaFrame` compone un panel con la marca de montaña al 10% de opacidad, que se
-lee como «foto por venir». Respeta la regla de contraste del brandbook — variante
-oscura sobre fondo claro en Origen, clara sobre oscuro en Club — y la prop
-`vacio="club"` mantiene esa sección dentro de su paleta propia, que no se mezcla
-con la principal.
+lee como «foto por venir», con la variante oscura del logo sobre fondo claro que
+exige el brandbook. La del Club dejó de hacer falta poco después, al aportar el
+cliente la tarjeta real (§2.7).
 
-El fallback por `onError` se conserva: en cuanto los archivos reales aparezcan en
+El fallback por `onError` se conserva: en cuanto el archivo real aparezca en
 `public/images/pending/`, la foto tapa el panel sin tocar una línea de código.
 
-Medido en 390/768/1280/1440/1920: **10/10** imágenes de producto cargadas, 2
-paneles de hueco, **0 imágenes rotas visibles** (antes 5) y sin desborde.
+Medido en 390/768/1280/1440/1920: **10/10** imágenes de producto cargadas,
+**0 imágenes rotas visibles** (antes 5) y sin desborde. Queda un solo hueco, el
+de `finca-familia.jpg`.
 
-### 2.7 La tarjeta del Club, recortada de su render
+### 2.7 La tarjeta del Club: flotación y brillo metalizado
 
-El cliente aportó un render de la tarjeta de fidelización y, aparte, un `.obj`
-con su modelo 3D. **El modelo no hizo falta**: se comprobó que llega sin
-texturas (`map=no` en los tres materiales), es decir, una tarjeta en blanco. El
-render, en cambio, ya trae el arte. Los dos quedan en `assets-fuente/` por si
-algún día se quiere otro ángulo — el modelo sí tiene las UV desplegadas de 0 a 1,
-así que aceptaría una textura sin tocar geometría.
+El cliente aportó primero un render sobre fondo blanco y un `.obj` con el modelo
+3D; después, un PNG ya con alfa. **Solo hace falta el último.**
 
-Recortar el render tuvo su trabajo, y por eso hay un script con las medidas
-dentro: `tools/recortar-tarjeta.py`. Dos problemas encadenados:
+**El `.obj` nunca sirvió para esto:** llega sin texturas (`map=no` en los tres
+materiales), o sea una tarjeta en blanco. Se conserva en `assets-fuente/` porque
+tiene las UV desplegadas de 0 a 1 y aceptaría una textura sin tocar geometría,
+por si algún día se quiere otro ángulo o una animación 3D.
 
-- **El interior de la tarjeta es casi blanco**, igual que el fondo. Borrar por
-  color se la lleva entera. Se rellena por inundación desde las esquinas, que
-  solo alcanza el blanco conectado con el exterior.
-- **El reflejo del suelo va soldado al canto inferior.** Comparten borde y
-  ningún umbral los separa; subir la tolerancia empezaba a comerse el filo antes
-  de limpiar el reflejo. Hace falta cortar por geometría, con un polígono.
+**El recorte manual del primer render se retiró.** Costó lo suyo —el interior de
+la tarjeta es casi blanco como el fondo, y el reflejo del suelo iba soldado al
+canto inferior, así que hubo que combinar inundación desde las esquinas con un
+polígono de coordenadas medidas— y quedó obsoleto en cuanto llegó el archivo con
+alfa. Su script se borró: mantener código que ya nadie ejecuta es peor que no
+tenerlo. `tools/optimizar-tarjeta.py` hace ahora lo único que hace falta,
+recortar a la caja de alfa, con el mismo criterio que los mockups de producto.
+Si alguna vez vuelve a llegar un render sobre fondo blanco, el episodio está en
+el historial de git.
 
-Las coordenadas del polígono están **medidas, no estimadas**: el filo derecho
-baja de (1418,270) a (1309,740) y el inferior sube de (200,722) a (800,811); el
-cruce de ambas rectas da el vértice inferior derecho en (1273,879) — unos 40 px
-más abajo de lo que parecía a ojo, que era justo por donde se colaba el reflejo.
+**Flotación y brillo.** Petición explícita del cliente, y una excepción al
+lenguaje quieto del Club que queda anotada en `AGENTS.md`. La excepción es el
+objeto, no la sección: el texto y el botón siguen entrando con su fade largo.
 
-En `Club.tsx` la tarjeta va suelta sobre el fondo, sin marco ni borde: es un
-objeto, no una fotografía enmarcada. **Sin animación de flotación a propósito** —
-el Club tiene lenguaje propio (fade largo, sin desplazamiento) y `AGENTS.md`
-prohíbe darle el tratamiento del resto de la página. La separa del negro una
-sombra, no el movimiento.
+- **Ciclo de 9 s**, más lento que cualquier pieza del hero (6,5–8,5 s), y con
+  menos recorrido: 16,7 px medidos. Un objeto de este peso visual moviéndose al
+  ritmo de una bolsa de café se lee nervioso.
+- **Doble sombra**: una corta y densa que lo despega del negro, otra larga y
+  difusa que hace de contacto. Con una sola, o flota sin peso o se pega al fondo.
+- **El barrido de luz va enmascarado con la propia tarjeta** (`mask-image` con el
+  mismo WebP). Sin la máscara la banda sería un rectángulo y se saldría por las
+  esquinas redondeadas y el canto biselado.
+- La banda ocupa el **12% del degradado**, que a `background-size: 280%` son unos
+  34% del ancho. El primer intento la puso al 30% (84% del ancho) y no se leía
+  como destello: subía el brillo de toda la superficie a la vez y lavaba la
+  impresión. Un reflejo especular es estrecho.
+- Con `reduce`, la flotación baja a 8 px en 14 s y el brillo a 0,45 de opacidad
+  en 20 s. El destello es lo más parecido a un parpadeo que hay en la página, así
+  que ahí `reduce` sí tiene razón — pero no se apaga, se atenúa.
 
 Al dejar de usarse el hueco del Club, la variante `vacio="club"` de `MediaFrame`
-quedó sin uso y se eliminó en el mismo commit.
+quedó sin uso y se eliminó.
 
 ---
 

@@ -62,9 +62,15 @@ sobre piedra cálida `--tierra` da 5.02:1 por sí solo.
 > Ya causó un bug real en esta migración (`handoff.md` §3.1) — si alguna
 > sección cambia a este fondo, es lo primero que hay que revisar.
 
-**Sub-marca Club 1800** (si el proyecto llega a tocarla): paleta propia
-negro/plateado/glow — nunca se mezcla con la paleta principal ni recibe el
-mismo tratamiento de animación.
+**Sub-marca Club 1800:** paleta propia negro/plateado/glow — nunca se mezcla
+con la paleta principal. Su lenguaje de animación también es propio: el texto y
+el botón entran con un fade largo, sin desplazamiento ni cascada.
+
+> **Excepción, decidida por el cliente el 3 de agosto de 2026:** la tarjeta de
+> membresía **sí** flota y **sí** lleva brillo metalizado, como los mockups del
+> hero. La excepción es el objeto, no la sección: alrededor, todo sigue quieto.
+> Se le dio un ciclo más lento que a cualquier pieza del hero (9 s frente a
+> 6,5–8,5 s) para que no compita con ellas ni se lea nerviosa.
 
 **Tipografía y roles:** Britanny Signature (portada/hero únicamente), Intro
 Rust Line (titulares secundarios), Suranna itálica (taglines/eyebrows/citas

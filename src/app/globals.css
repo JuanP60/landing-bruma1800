@@ -610,6 +610,88 @@ body {
   will-change: transform;
 }
 
+/* ---------- Tarjeta del Club 1800 ----------
+   Recibe el mismo trato que los mockups del hero: flota y tiene sombra propia.
+   Es una excepción pedida por el cliente al criterio de AGENTS.md, que reserva
+   al Club un lenguaje sin movimiento — la excepción es la tarjeta, no la
+   sección: el texto y el botón siguen entrando con su fade largo y quieto.
+
+   El ciclo es de 9 s, más lento que cualquier mockup del hero (6,5–8,5 s), y
+   el recorrido menor. Un objeto de este peso visual moviéndose al ritmo de una
+   bolsa de café se leería nervioso. */
+.tarjeta-club {
+  --amp: -16px;
+  --dur: 9s;
+  position: relative;
+  animation: tarjeta-flotar var(--dur) ease-in-out infinite;
+  will-change: transform;
+}
+.tarjeta-club img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Doble sombra: una corta y densa que la despega del negro, y otra larga y
+     difusa que hace de contacto. Con una sola, o flota sin peso o se pega. */
+  filter:
+    drop-shadow(0 14px 18px rgba(0, 0, 0, 0.85))
+    drop-shadow(0 34px 55px rgba(0, 0, 0, 0.6));
+}
+
+/* Barrido de luz metalizada. Va enmascarado con la propia tarjeta: sin la
+   máscara, la banda de luz sería un rectángulo y se saldría por las esquinas
+   redondeadas y por el canto biselado. `screen` sobre el plateado levanta el
+   brillo sin lavar el gris de la impresión. */
+.tarjeta-club__brillo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: var(--brillo-op, 1);
+  /* La banda ocupa el 12% del degradado, que a 280% de tamaño son ~34% del
+     ancho de la tarjeta. Con la banda ancha (30% / 84% del ancho) no se leía
+     como destello: subía el brillo de toda la superficie a la vez y lavaba la
+     impresión. Un reflejo especular es estrecho y va y viene. Cinco paradas y
+     no tres, para que el modo `screen` no delate el quiebre de pendiente. */
+  background: linear-gradient(
+    104deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.08) 47%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.08) 53%,
+    transparent 58%
+  );
+  background-size: 280% 100%;
+  -webkit-mask-image: url("/images/club/tarjeta-1800.webp");
+  mask-image: url("/images/club/tarjeta-1800.webp");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: tarjeta-brillo 8s ease-in-out infinite;
+}
+
+@keyframes tarjeta-flotar {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(var(--amp) * var(--amp-scale, 1));
+  }
+}
+
+/* El destello cruza una vez y descansa: de 0 a 45% barre, y el resto del ciclo
+   se queda fuera de cuadro. Un brillo que va y viene sin parar parece un GIF. */
+@keyframes tarjeta-brillo {
+  0% {
+    background-position: 150% 0;
+  }
+  45%,
+  100% {
+    background-position: -60% 0;
+  }
+}
+
 /* ---------- Reduced-motion: solo lo intrusivo ----------
    Se apaga el parallax con scrub; se conserva todo lo demás con el
    recorrido reducido. Ver el porqué en handoff.md del proyecto original
@@ -628,6 +710,17 @@ body {
   .decor__abeja-aleteo {
     --amp-scale: 0.5;
     animation-duration: 1.8s;
+  }
+  /* La tarjeta conserva su flotación a media amplitud. El barrido de luz sí se
+     alarga mucho y se atenúa: un destello que cruza es lo más parecido a un
+     parpadeo que hay en la página, y ahí `reduce` sí tiene razón. */
+  .tarjeta-club {
+    --amp-scale: 0.5;
+    animation-duration: 14s;
+  }
+  .tarjeta-club__brillo {
+    --brillo-op: 0.45;
+    animation-duration: 20s;
   }
   .js-anim .ciclo::before {
     transform: scaleX(1);

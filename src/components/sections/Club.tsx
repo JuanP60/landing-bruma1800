@@ -25,20 +25,22 @@ export default function Club() {
             {club.cta}
           </Button>
         </div>
-        {/* La tarjeta va recortada sobre el fondo, no dentro de un recuadro con
-            borde: es un objeto, no una fotografía enmarcada. Sin animación de
-            flotación a propósito — el Club tiene lenguaje propio, fade largo y
-            sin desplazamiento, y no recibe el tratamiento del resto de la
-            página. La sombra la separa del negro sin necesidad de moverla. */}
-        <figure data-reveal-club className="relative">
+        {/* La tarjeta va suelta sobre el fondo, no dentro de un recuadro con
+            borde: es un objeto, no una fotografía enmarcada. Flota y tiene
+            brillo metalizado, como los mockups del hero — excepción pedida por
+            el cliente al lenguaje quieto del Club; ver globals.css.
+            El brillo es un hermano, no un hijo del <img>: un elemento dentro
+            de la imagen no existe, y como hermano puede mezclarse en `screen`
+            usando la propia tarjeta como máscara. */}
+        <figure data-reveal-club className="tarjeta-club">
           <Image
             src={club.image}
             alt={club.imageAlt}
             width={1200}
-            height={704}
+            height={708}
             sizes="(min-width: 980px) 45vw, 92vw"
-            className="h-auto w-full drop-shadow-[0_28px_45px_rgba(0,0,0,0.85)]"
           />
+          <span className="tarjeta-club__brillo" aria-hidden="true" />
         </figure>
       </Wrap>
     </section>
