@@ -642,6 +642,11 @@ body {
    redondeadas y por el canto biselado. `screen` sobre el plateado levanta el
    brillo sin lavar el gris de la impresión. */
 .tarjeta-club__brillo {
+  /* Un solo mando para el ritmo del destello. El barrido ocupa el 45% del
+     ciclo y el resto es reposo, así que cruzar dura `--ciclo * 0.45`. El
+     destello del cursor reutiliza este mismo valor: si aquí se cambia, los dos
+     siguen yendo a la misma velocidad sin tener que acordarse de nada. */
+  --ciclo: 4.5s;
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -667,7 +672,7 @@ body {
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  animation: tarjeta-brillo 4.5s ease-in-out infinite;
+  animation: tarjeta-brillo var(--ciclo) ease-in-out infinite;
 }
 
 /* Al pasar el cursor, el destello cruza al momento y una sola vez. Funciona
@@ -676,15 +681,22 @@ body {
    finos — en táctil no hay hover y el bucle de fondo ya cumple. */
 @media (hover: hover) and (pointer: fine) {
   .tarjeta-club:hover .tarjeta-club__brillo {
-    animation: tarjeta-brillo-cursor 0.85s ease-out;
+    animation: tarjeta-brillo-cursor var(--ciclo) ease-in-out 1;
   }
 }
 
+/* Copia exacta de `tarjeta-brillo`. Existe solo para tener otro nombre y poder
+   reiniciar la animación al entrar el cursor; misma curva, mismo reparto entre
+   barrido y reposo, misma duración. Así el destello del cursor va exactamente
+   a la velocidad del automático, no parecida: es el mismo movimiento.
+   No se puede sustituir por `animation-iteration-count: 1` sobre el original
+   porque, sin cambiar el nombre, la animación no se reinicia. */
 @keyframes tarjeta-brillo-cursor {
-  from {
+  0% {
     background-position: 150% 0;
   }
-  to {
+  45%,
+  100% {
     background-position: -60% 0;
   }
 }
@@ -738,9 +750,11 @@ body {
     --amp-scale: 0.5;
     animation-duration: 14s;
   }
+  /* Se alarga el ciclo, no la duración: así el destello del cursor se alarga
+     con él y los dos siguen igualados también con `reduce` activo. */
   .tarjeta-club__brillo {
     --brillo-op: 0.45;
-    animation-duration: 12s;
+    --ciclo: 12s;
   }
   .js-anim .ciclo::before {
     transform: scaleX(1);

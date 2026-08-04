@@ -168,11 +168,18 @@ objeto, no la sección: el texto y el botón siguen entrando con su fade largo.
   34% del ancho. El primer intento la puso al 30% (84% del ancho) y no se leía
   como destello: subía el brillo de toda la superficie a la vez y lavaba la
   impresión. Un reflejo especular es estrecho.
-- **Ciclo de 4,5 s** y, en punteros finos, **un barrido inmediato al pasar el
-  cursor** (`tarjeta-brillo-cursor`, 0,85 s, una sola pasada). Funciona porque
-  cambiar el `animation-name` reinicia la animación desde cero, así que responde
-  a cada pasada del ratón por rápida que sea. En táctil no hay hover y el bucle
-  de fondo cumple solo.
+- **Ciclo de 4,5 s** y, en punteros finos, **un barrido al pasar el cursor**.
+  Funciona porque cambiar el `animation-name` reinicia la animación desde cero,
+  así que responde a cada pasada del ratón por rápida que sea. En táctil no hay
+  hover y el bucle de fondo cumple solo.
+- Los dos van **exactamente a la misma velocidad**, no parecida:
+  `tarjeta-brillo-cursor` es copia literal de `tarjeta-brillo` —mismas paradas,
+  misma curva— y ambos leen la duración de `--ciclo`. La variable es lo que ata
+  las dos cosas: cambiarla mueve las dos a la vez, y por eso `reduce` ajusta
+  `--ciclo` en vez de `animation-duration`. La copia hace falta porque sin
+  cambiar el nombre la animación no se reinicia; `animation-iteration-count: 1`
+  sobre el original no vale. Medido: cruzan en **1062 ms y 1067 ms**, 0,5% de
+  diferencia, que es el error de muestrear a 16 ms.
 - Con `reduce`, la flotación baja a 8 px en 14 s y el brillo a 0,45 de opacidad
   en 12 s. El destello es lo más parecido a un parpadeo que hay en la página, así
   que ahí `reduce` sí tiene razón — pero no se apaga, se atenúa.
