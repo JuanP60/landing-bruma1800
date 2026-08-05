@@ -4,9 +4,9 @@ Estado del trabajo para retomarlo después de un `/clear`. Complementa a `README
 (stack, estructura de carpetas, cómo correr, cómo activar el chatbot) — este
 documento es la bitácora de **qué se hizo y por qué**, no el mapa del código.
 
-**Última actualización:** 3 de agosto de 2026. Recoge dos sesiones: la migración
-inicial (31 de julio) y la de diseño del 3 de agosto, en la que este proyecto
-pasó a ser **el activo** — ver §2.5.
+**Última actualización:** 3 de agosto de 2026. Recoge tres sesiones: la migración
+inicial (31 de julio), la de diseño del 3 de agosto —en la que este proyecto pasó
+a ser **el activo**, ver §2.5— y la del bucle de vídeo de la finca, §2.8.
 
 ---
 
@@ -228,6 +228,239 @@ su único objeto.
 Al dejar de usarse el hueco del Club, la variante `vacio="club"` de `MediaFrame`
 quedó sin uso y se eliminó.
 
+### 2.8 El último hueco: un bucle de vídeo de la finca
+
+El de `finca-familia.jpg`, el único que quedaba. El cliente aportó
+**`BRUMA 1800 COMERCIAL #1.mp4`**: 2160×3840, 60 fps, 72 s, **405 MB**. Vertical,
+que es la suerte de todo esto — el marco de Origen es 4:5, así que el recorte cae
+arriba y abajo y no se pierde nada por los lados.
+
+**De 72 s a 10.** Se detectaron los doce cortes de plano del comercial y se
+evaluaron los cuatro planos continuos largos por cómo *ciclan*, no por lo bonitos
+que son sueltos:
+
+| plano | duración | por qué sí o no |
+|---|---|---|
+| **casa de la finca** (12,4–17,4) | 5,0 s | **el elegido.** Corredor, piso de madera, materas, luz de las cinco |
+| marquesina (43,1–49,4) | 6,3 s | arranca en una viga oscura y el salto de cierre es grande |
+| granos y atardecer (49,5–59,8) | 10,3 s | el mejor remate del comercial, pero principio y final son planos distintos |
+| manos y bolsa (59,9–68,0) | 8,1 s | enseña empaque, y esta sección no vende |
+
+**Ida y vuelta, no fundido cruzado.** El plano es un travelling: su último
+fotograma no empalma con el primero. En vez de disimular el salto con un
+crossfade —que emborrona un segundo, y en un movimiento tan lento se nota— se
+concatena el plano con su reverso. Quedan 9,93 s y **ni un solo corte**: la
+cámara avanza y vuelve, y se lee como una deriva.
+
+Los dos fotogramas del pliegue se descartan a propósito. `reverse` devuelve
+repetidos el último y el primero, y dejarlos ahí congela la imagen una trama en
+cada extremo — el hipo clásico del ping-pong. Por eso el filtro lleva
+`trim=start_frame=1:end_frame=n-1` y por eso el resultado son 298 tramas exactas
+y no 300.
+
+**Un solo formato.** Lo normal sería servir también WebM/VP9, y se probó: a
+calidad indistinguible al 100%, VP9 pesa 1341 KB contra 1413 KB del H.264. **72 KB,
+un 5%.** Este material es luz cálida y suave, con poco detalle de alta frecuencia,
+y ahí VP9 no saca la ventaja que saca en otros. No compensa un segundo archivo que
+regenerar y mantener sincronizado, así que se quedó en MP4. Si el plano cambia por
+uno con más textura, conviene volver a medirlo en vez de darlo por sentado.
+
+**Cómo se comporta** (`MediaVideo.tsx`, hermano de `MediaFrame`):
+
+- Mudo y sin pista de audio: no hay nada que silenciar.
+- **Botón de pausa.** Son casi diez segundos de movimiento automático y sin una
+  forma de detenerlo esto incumple el criterio 2.2.2 de WCAG. Alcanzable con
+  teclado, no solo al pasar el cursor.
+- **Arranca solo, sin que nadie pulse nada**, y **también con `reduce`**. Hubo una
+  primera versión que con esa preferencia se quedaba en el póster esperando al
+  botón; el cliente pidió retirarla. El motivo de fondo es el gotcha 8 del proyecto
+  original: en este Windows `reduce` viene puesto de fábrica sin que nadie lo elija,
+  así que aquello dejaba el vídeo sin reproducirse casi nunca. Ahora el vídeo sigue
+  el mismo criterio que el resto de la página —moverse siempre— y lo que se conserva
+  es el botón de pausa, que es lo que el criterio 2.2.2 de WCAG pide de verdad:
+  **una forma de pararlo**, no que no empiece.
+- **Solo corre mientras se ve**, por `IntersectionObserver` con `rootMargin` de
+  250 px. La sección está bien abajo; no tiene sentido decodificar para nadie. Ese
+  margen es lo que hace que la reproducción se sienta inmediata: cuando la sección
+  asoma, el vídeo ya lleva un momento corriendo, en vez de empezar a buscar datos
+  justo al aparecer. Una pausa a mano manda sobre el observador: volver a la sección
+  no la reanuda.
+- `video.muted = true` **también desde JS**: React no siempre emite ese atributo en
+  el HTML del servidor, y sin él la política de autoplay bloquea la reproducción.
+- Detrás sigue el panel de marca de montaña, por si el archivo falla algún día.
+
+**El fuente no vive en el repo.** 405 MB no entran en git. Está en la videoteca del
+cliente, `MULTIMEDIA BRUMA1800/BRUMA COMERCIALES/`, y `tools/preparar-video-origen.py`
+lo lee de ahí. Llegó a haber una copia suelta en el `assets/img/` del sitio
+estático; se borró tras verificar que era byte a byte idéntica, y ese repo ganó una
+regla en `.gitignore` para que no vuelva a colarse.
+
+**Efecto colateral: `MediaFrame` adelgazó.** Al ocupar el vídeo el último hueco de
+foto, su modo `fit="cover"` —el panel de «foto por venir» y el estado de error— se
+quedó sin un solo uso: ahora solo lo llama el portafolio, siempre con `contain`. Se
+retiró, igual que antes se retiró `vacio="club"`. El panel sigue vivo dentro de
+`MediaVideo`, que es donde hace falta.
+
+### 2.9 Bruma en el Club, y la tarjeta flotando más
+
+Las dos cosas las pidió el cliente en la misma vuelta.
+
+**Las nubes del hero, ahora también en el Club.** Las mismas tres imágenes y
+**exactamente las mismas velocidades** —deriva 150/98/64 s, vaivén 44/33/26 s—,
+repartidas de otra manera: otras alturas (4% / 42% / 72%), otros mosaicos y otras
+fases, para que no se lea como la misma imagen repetida más abajo. Van las tres
+por detrás del contenido; en el hero una capa pasa por delante del texto, pero
+sobre el negro del Club eso emborronaría el plateado.
+
+Es una **excepción al criterio de `AGENTS.md`**, que reserva al Club un lenguaje
+propio y sin el tratamiento de la marca principal. La pidió el cliente, igual que
+en su día la flotación de la tarjeta. Queda anotada como decisión suya.
+
+**Las opacidades no son las del hero, y no por gusto.** Allí van sobre azul bruma
+a 0,85/0,72/0,40; aquí el fondo es casi negro y a esa opacidad una nube blanca no
+es bruma, es una mancha que levanta la luminancia del fondo y se lleva por delante
+el contraste del texto plateado.
+
+El primer intento —0,13/0,09/0,06— **pasaba por los pelos**: eyebrow en 4,59:1 y
+número en 4,53:1 contra un mínimo de 4,5. Con unas nubes que derivan sin parar, un
+margen del 2% significa que un rato más tarde ya no pasa. Bajando la capa alta a
+0,09 y la media a 0,075, el peor caso sube a **5,07:1** y la bruma se sigue
+leyendo. La capa baja puede ser la más suelta porque cae por la zona de la
+tarjeta, que es opaca.
+
+`tools/medir-contraste-club.mjs` lo comprueba con el criterio de siempre: tapa el
+texto, y busca el **peor píxel** que hay detrás de cada línea en nueve instantes
+distintos del ciclo. Ni promedios ni una sola captura — una nube pasa por encima
+de unas letras y no de otras. El color de cada línea se lee con
+`getComputedStyle`, no se supone. El botón queda fuera de la medición **a
+propósito**: es opaco, ninguna nube puede tocarlo, y medirlo daría un falso
+negativo (el gotcha 13 del proyecto estático, otra vez).
+
+**La tarjeta flota más.** El recorrido pasó de 16 a **30 px**; medido en el
+navegador, el viaje real es de **35,8 px**, porque a la traslación se le suma la
+escala. Se tocó la amplitud y **no la duración**: el ciclo sigue en 9 s. Alargar el
+viaje dentro del mismo ciclo hace el movimiento más visible sin volverlo inquieto,
+que es lo que habría pasado acelerándolo.
+
+Además crece un **2%** al llegar arriba, para que además de subir parezca
+acercarse. Es lo que vende la levitación sobre un fondo negro: aquí la sombra no
+puede ayudar —una sombra sobre negro no se ve—, así que el trabajo lo hace la
+perspectiva. `translate` y `scale` son propiedades independientes y se animan en
+el mismo keyframe sin pisarse, que es justo lo que no se podía hacer con dos
+animaciones sobre el mismo elemento.
+
+La escala se calcula desde `--amp-scale`, así que con `reduce` se achica sola junto
+con el recorrido: **16,6 px y 1%**, casi exactamente lo que era el efecto completo
+antes de este cambio.
+
+### 2.10 Calidad, de café profundo a verde montaña
+
+Petición del cliente: `#4A6741`, el verde montaña del brandbook. El token ya
+existía en la paleta con el nombre `--verde-hoja`, así que el fondo es
+`bg-verde-hoja` y no hay ningún hex suelto en el código.
+
+**El cambio no es solo de fondo.** El café profundo es casi negro (luminancia
+0,029) y el verde montaña es un tono medio (0,115): cuatro veces más claro. Todo
+el texto de la sección es claro, así que todo pierde contraste de golpe. Medido
+antes de aplicarlo:
+
+| línea | color | sobre café | sobre verde | mínimo | |
+|---|---|---|---|---|---|
+| eyebrow | `--niebla` | 7,81 | **3,72** | 4,5 | se rompe |
+| protocolo SCA | `--arena` | 6,53 | **3,25** | 4,5 | se rompe |
+| intro y «quien» | `--piedra-calida` | 9,86 | 4,76 | 4,5 | aguanta |
+| titular, puntaje, lugar | `--hueso` | 11,7 | 5,64 | 3 / 4,5 | aguanta |
+
+Los dos que se rompen suben a `--piedra-calida`. Eran los dos tonos más apagados
+de la sección —el eyebrow en azulado frío, la línea del SCA en un tan tostado— y
+sobre el café profundo se podían permitir ser tenues porque partían de 7:1. Sobre
+el verde ya no. Se pierde un matiz de jerarquía, pero es eso o texto que no se
+lee.
+
+El eyebrow estrena variante **`onVerde`** en `Typography.tsx`, hermana de
+`onNiebla`. El caso es el mismo al revés: un fondo de tono medio deja fuera al
+tono claro más frío, igual que el azul bruma dejaba fuera a `--tierra`.
+
+Verificado en el navegador a 390 y 1440: **el peor caso es 4,72:1** sobre un
+mínimo de 4,5. El margen es justo, pero aquí es un color plano —no hay nubes
+derivando por detrás como en el Club—, así que el número es determinista y no va
+a moverse solo.
+
+**El medidor de contraste ahora sirve para las dos secciones.** Lo que era
+`medir-contraste-club.mjs` es ahora `tools/medir-contraste.mjs`, con un pequeño
+registro de secciones: `node tools/medir-contraste.mjs calidad|club|todas`. Las
+de fondo en movimiento declaran cuántas muestras necesitan; las de color plano,
+una. Se hizo al necesitar lo mismo para Calidad: dos copias de 120 líneas casi
+iguales envejecen mal.
+
+
+### 2.11 Inclinación 3D de la tarjeta, siguiendo al cursor
+
+Petición del cliente, a partir de un patrón de referencia hecho en React +
+Framer Motion. **No se trajo ninguna dependencia**: sale con un hook propio
+(`useTilt3D`) y CSS, que es como está hecho el resto del movimiento de la casa.
+
+El mecanismo: el hook escribe `--tx` y `--ty` normalizadas de −1 a 1 según dónde
+esté el puntero respecto al centro, y el CSS decide los grados. Ese reparto deja
+el rango en un solo sitio y permite que `prefers-reduced-motion` lo recorte a la
+mitad sin que el hook se entere de nada — mismo criterio que `--amp-scale`.
+
+**El envoltorio no es decorativo, es el arreglo.** La inclinación no puede ir
+sobre `.tarjeta-club`: GSAP le deja un `transform` **en línea** al revelarla —una
+foto congelada de la flotación, sin rotación— y el estilo en línea gana siempre a
+la hoja de estilos. El resultado era que `--tx` y `--ty` cambiaban correctamente y
+la tarjeta no se movía ni un grado. Es el gotcha 5 del proyecto original asomando
+por otro lado, y se ve en el estilo calculado:
+
+```
+transform: translate3d(0px, -5.85px, 0px) scale(1.0039) matrix3d(…, -0.0025, …)
+```
+
+La solución es la de siempre aquí: repartir los movimientos entre dos elementos,
+como la rama de cafeto. `.tarjeta-club-3d` envuelve y se inclina; `.tarjeta-club`
+sigue flotando y brillando dentro. Ninguna pisa a la otra.
+
+Detalles que importan:
+
+- **±5°** y `perspective(400px)`, los valores del patrón de referencia. Para una
+  tarjeta de ~515 px esa perspectiva es cerrada y el efecto se nota bastante; si
+  hay que suavizarlo, subir la distancia (600–800 px) antes que bajar el ángulo.
+- La transición con rebote (`cubic-bezier(0.34, 1.56, 0.64, 1)`, 620 ms) **solo
+  actúa al soltar**: mientras el puntero manda, la clase `.esta-inclinandose` la
+  apaga. Con transición activa durante el movimiento se leería como retardo.
+- `touchmove` va con `preventDefault` y **`{ passive: false }`**, que es
+  obligatorio: sin esa opción el navegador ignora el `preventDefault` y avisa por
+  consola. Ojo, esto significa que **arrastrar el dedo sobre la tarjeta no
+  desplaza la página**; en móvil la tarjeta ocupa casi todo el ancho, así que es
+  una decisión con coste. Está pedida así.
+- El movimiento se acumula en un `requestAnimationFrame`: `mousemove` dispara
+  mucho más a menudo de lo que la pantalla pinta.
+
+**Verificado** con `tools/medir-tilt-club.mjs`, que descompone la matriz 3D real
+en vez de leer el CSS (ahí pone `rotateX(calc(...))`, no los grados aplicados):
+en reposo 0°, en las cuatro esquinas entre 2,98° y 3,91° con los signos
+simétricos, **nunca pasa de 5°**, vuelve a 0 al salir el cursor, y en `touchmove`
+el evento sale cancelado y la página no se desplaza.
+
+> Al escribir ese verificador, la primera versión medía en las esquinas al 2% y
+> al 98% y daba ceros: la tarjeta flota 30 px sin parar, así que entre medir la
+> caja y mandar el evento el punto se quedaba fuera y saltaba `mouseleave`. Los
+> puntos de prueba están al 12–88%.
+
+**Lo que no se trasladó del patrón de referencia**, y por qué:
+
+- **La cascada de texto dentro de la tarjeta no se puede hacer**: la tarjeta es
+  un render en WebP de una tarjeta física, no una composición de elementos de
+  texto. No hay dentro «nivel actual» ni «cada compra suma metros» ni números de
+  metros con glow — eso es contenido del ejemplo. El texto real del Club
+  («1800 · 18:00», la nota, el CTA) vive **al lado** de la tarjeta, no dentro.
+- **El desplazamiento vertical en la entrada tampoco se aplicó.** La tarjeta ya
+  se revela al hacer scroll, pero con fade largo **sin desplazamiento y sin
+  cascada**, que es el lenguaje propio del Club documentado en `AGENTS.md` y en
+  `useClubReveal`. Añadirle desplazamiento contradice esa decisión de marca, así
+  que se deja como está hasta que el cliente diga lo contrario.
+- El botón de mostrar/ocultar tipo «ojo» se omitió, como se pidió: no hay
+  información que ocultar en esta tarjeta.
 ---
 
 ## 3. Bugs encontrados y corregidos en la migración
@@ -334,10 +567,18 @@ recorte-a-alfa que el sitio original:
 
 ```powershell
 python tools/optimizar-tarjeta.py assets-fuente/tarjeta-club-1800.png public/images/club/tarjeta-1800.webp
+python tools/preparar-video-origen.py "../MULTIMEDIA BRUMA1800/BRUMA COMERCIALES/BRUMA 1800 COMERCIAL #1.mp4"
 ```
 
 `assets-fuente/` guarda los originales que entrega el cliente. Queda **fuera de
-`public/`** a propósito: son material de trabajo, no se sirven.
+`public/`** a propósito: son material de trabajo, no se sirven. Los vídeos son la
+excepción y ni siquiera pasan por ahí: pesan cientos de MB y se leen directamente
+de la videoteca del cliente.
+
+`preparar-video-origen.py` necesita **ffmpeg**, que no venía en este equipo. Se
+instaló con `winget install Gyan.FFmpeg`. Ojo: winget **no lo deja en el PATH**
+—no crea los enlaces—, así que el script lo busca él mismo dentro de
+`%LOCALAPPDATA%\Microsoft\WinGet\Packages` cuando `shutil.which` no lo encuentra.
 
 ### Medir en el navegador
 
@@ -360,6 +601,35 @@ futura de este proyecto:
 - **Auditar `getComputedStyle` por elemento, no releer el JSX.** Así apareció el
   bug de §3.2, donde ~20 elementos caían al font stack del sistema y el código
   parecía correcto.
+- **Con vídeo, `paused:false` no prueba nada.** Un elemento que no ha cargado
+  también lo dice. Lo que prueba que se está reproduciendo de verdad es que
+  `currentTime` **avance** entre dos lecturas separadas en el tiempo. Es lo que
+  mide `tools/medir-video-origen.mjs`.
+- **En headless hace falta `--autoplay-policy=no-user-gesture-required`.** Sin esa
+  bandera Chrome bloquea hasta el autoplay mudo y la medición dice que el vídeo no
+  arranca, cuando en un navegador normal arranca perfectamente.
+- **`Page.captureScreenshot` recorta en coordenadas de PÁGINA, no de viewport.**
+  Pasarle un `getBoundingClientRect` a secas devuelve una captura en blanco de una
+  zona que está por encima del contenido. Hay que sumarle `scrollX`/`scrollY`.
+  Cuidado, porque este falla **en silencio**: la primera vez dio una captura
+  vacía, que se ve enseguida; la segunda dio una tabla entera de contrastes
+  plausibles pero medidos sobre otra sección, y esos números sí se podrían haber
+  dado por buenos.
+- **No borrar `.next` con el servidor corriendo.** Cuesta caro y no avisa. Al
+  hacerlo, el optimizador de imágenes se queda con entradas que cree tener y no
+  tiene, y a partir de ahí **una petición concreta se cuelga para siempre**: el
+  navegador la pide, no llega respuesta nunca, y la imagen se queda en
+  `complete:false` con `currentSrc` vacío. Pasó con la tarjeta del Club a 390 px
+  (`w=384`), mientras 256, 640 y 750 respondían en 20 ms, y llevó un buen rato de
+  sospechar del ancho y de la imagen. Con el servidor reiniciado y
+  `.next/cache/images` borrada **en frío**, esa misma petición tarda 166 ms.
+  Parar el servidor, borrar, reconstruir, levantar.
+
+  > Esto huele mucho al misterio de §2.7, el de `loading="lazy"` que «no llegaba
+  > a disparar» en esta misma imagen: el síntoma descrito allí —petición hecha,
+  > ninguna respuesta, imagen incompleta— es exactamente este. **No está
+  > demostrado**, porque aquello no se volvió a reproducir, pero antes de volver a
+  > tocar el `loading="eager"` de la tarjeta conviene probar en un servidor limpio.
 - **No fiarse de las duraciones declaradas: cronometrar el movimiento.** Para
   comparar el destello automático con el del cursor (§2.7) hubo que medir cuánto
   tarda en cruzar, no leer `animation-duration`. Y esperar a que el bucle esté en
@@ -371,7 +641,27 @@ futura de este proyecto:
 
 - **10/10** imágenes de producto cargadas en 390, 768, 1280, 1440 y 1920 px.
 - **0** imágenes rotas visibles y **0** desborde horizontal en esos cinco anchos.
-- **1** panel de hueco, el de `finca-familia.jpg`.
+- **0** paneles de hueco: no queda ninguna foto pendiente en la página.
+- Bucle de origen, en los cinco anchos: parado antes de llegar a la sección,
+  avanzando dentro de ella (~1,78 → ~2,99 s), para con el botón, sigue al
+  volver a pulsarlo y para al salir de pantalla. **Con `reduce` arranca solo
+  igualmente** (1,78 → 2,99) y el botón lo sigue parando. Marco de 342×428
+  (390 px), 688×860 (768) y 514×620 desde 1280.
+- Vídeo: 720×900, 30 fps, **298 tramas** exactas, 9,93 s, 1413 KB.
+- Contraste del Club con la bruma detrás, peor píxel en nueve instantes del ciclo
+  y a 390/1440: eyebrow **5,12 / 5,56**, número **5,51 / 5,07**, párrafo
+  **11,99 / 10,10**, nota **16,48 / 16,48**, titular **11,86 / 11,95**. Mínimos
+  4,5 (y 3 para el titular, que es texto grande).
+- Tarjeta del Club: recorrido real **35,8 px** y crecimiento del **2,13%** con
+  ciclo de 9 s; con `reduce`, **16,6 px** y **1%** en 14 s.
+- Inclinación 3D de la tarjeta: 0° en reposo, entre **2,98° y 3,91°** en las
+  cuatro esquinas con signos simétricos, **nunca por encima de 5°**, y vuelta a 0
+  al salir el cursor. En `touchmove` el evento sale cancelado y la página no se
+  desplaza.
+- Imagen de la tarjeta cargada en 360, 390, 500, 640, 700 y 768 px.
+- Contraste de Calidad sobre verde montaña, a 390 y 1440: peor caso **4,72:1**
+  (eyebrow, intro, protocolo SCA y «quien»), **5,64:1** el resto. Mínimos 4,5,
+  y 3 para titular y puntaje, que son texto grande.
 - 7/7 enlaces de WhatsApp a `573152103231`, con `?text=` diferenciado por sección.
 - Puntajes SCA `87.5|83.0`.
 - Destello: cruza en **1062 ms** solo y **1067 ms** con el cursor encima.
@@ -383,10 +673,11 @@ futura de este proyecto:
 Nada quedó a medias: build, ESLint y la auditoría WIG están limpios al cierre.
 Lo que falta depende de material o de decisiones del cliente:
 
-- [ ] **Una foto real**, `finca-familia.jpg`, en `public/images/pending/`. Las
-      tres del portafolio ya no bloquean — usan los renders del propio producto
-      (§2.6) — y la del Club se resolvió con la tarjeta (§2.7). Ese único hueco
-      muestra hoy un panel de marca, no un rectángulo vacío.
+- [x] **Ya no falta ninguna foto.** El último hueco, el de `finca-familia.jpg`, lo
+      ocupa el bucle de vídeo de la finca (§2.8). Las tres del portafolio usan los
+      renders del propio producto (§2.6) y la del Club se resolvió con la tarjeta
+      (§2.7). Si algún día llega una foto real de la familia, hay que decidir si
+      sustituye al vídeo y apuntarla a mano: ya no queda respaldo automático.
 - [ ] **Testimonios reales.** La sección sigue sin existir a propósito; no
       rellenar con texto inventado.
 - [ ] **Conectar `N8N_WEBHOOK_URL`.** El chatbot tiene el scaffold listo y

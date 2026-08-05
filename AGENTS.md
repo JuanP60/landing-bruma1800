@@ -44,12 +44,17 @@ en `handoff.md` §2.3.
 | Café profundo | `#3B2418` | Ancla oscura |
 | Piedra cálida | `#E8DDC7` | Ancla clara |
 | Naranja cafetero | `#E85A2B` | Acento único — nunca más de un uso por pieza |
-| Verde montaña | `#4A6741` | Apoyo, uso ocasional |
+| Verde montaña | `#4A6741` | Apoyo. **Es el fondo de la sección de calidad** desde el 3 de agosto de 2026 |
 | Azul bruma | `#B7C9D3` | Atmósfera, nunca como CTA. Es el fondo del hero |
 
 El hero **no es ancla oscura**: es azul bruma, con montaña acuarela y tres
-capas de nubes reales, texto en variantes oscuras y logo oscuro. `.calidad`
-y `.cta` siguen en café profundo.
+capas de nubes reales, texto en variantes oscuras y logo oscuro.
+
+**La sección de calidad pasó de café profundo a verde montaña** el 3 de agosto de
+2026, a petición del cliente. `.cta` sigue en café profundo. El cambio obligó a
+subir dos textos: sobre el verde, `--niebla` cae a 3,72:1 y `--arena` a 3,25:1,
+y los dos van ahora en `--piedra-calida` (4,72:1 medido). De ahí sale la variante
+`onVerde` del `Eyebrow`. Ver `handoff.md` §2.10.
 
 La sección de origen se probó en azul bruma y **se revirtió a petición del
 cliente**: su fondo es `--piedra-calida`, el del diseño original. Conserva la
@@ -66,11 +71,34 @@ sobre piedra cálida `--tierra` da 5.02:1 por sí solo.
 con la paleta principal. Su lenguaje de animación también es propio: el texto y
 el botón entran con un fade largo, sin desplazamiento ni cascada.
 
-> **Excepción, decidida por el cliente el 3 de agosto de 2026:** la tarjeta de
-> membresía **sí** flota y **sí** lleva brillo metalizado, como los mockups del
-> hero. La excepción es el objeto, no la sección: alrededor, todo sigue quieto.
-> Se le dio un ciclo más lento que a cualquier pieza del hero (9 s frente a
-> 6,5–8,5 s) para que no compita con ellas ni se lea nerviosa.
+> **Excepciones, decididas por el cliente el 3 de agosto de 2026:**
+>
+> 1. La tarjeta de membresía **sí** flota y **sí** lleva brillo metalizado, como
+>    los mockups del hero. Se le dio un ciclo más lento que a cualquier pieza del
+>    hero (9 s frente a 6,5–8,5 s) para que no compita con ellas ni se lea
+>    nerviosa. El recorrido se subió después de 16 a 30 px, también a petición,
+>    porque apenas se notaba: se alargó el viaje, **no** se aceleró el ciclo.
+> 2. La tarjeta **se inclina en 3D siguiendo al cursor o el dedo** (±5°, con
+>    rebote al soltar). Hook propio `useTilt3D` + CSS: **sin dependencias
+>    nuevas**. Va sobre un envoltorio, `.tarjeta-club-3d`, y no sobre la tarjeta
+>    misma — GSAP le deja un `transform` en línea que gana a la hoja de estilos.
+>    Ver `handoff.md` §2.11.
+> 3. La sección lleva **las mismas nubes del hero**, a las mismas velocidades y
+>    con otro reparto de alturas y fases. Sus opacidades son mucho más bajas
+>    (0,09 / 0,075 / 0,06 frente a 0,85 / 0,72 / 0,40) porque sobre el negro del
+>    Club una nube blanca se come el contraste del texto plateado. **Están medidas**
+>    con `tools/medir-contraste-club.mjs`; quien las suba, que vuelva a correrlo.
+>
+> Lo demás de la sección sigue quieto: el texto y el botón entran con su fade
+> largo, sin desplazamiento ni cascada.
+
+**Movimiento y `prefers-reduced-motion`:** la regla de la casa es *atenuar, nunca
+apagar* — Windows manda `reduce` de fábrica y aplicarla al pie de la letra dejaría
+la página muerta. **Sin excepciones, y el vídeo de origen tampoco.** Hubo una
+versión en la que ahí `reduce` significaba arrancar pausado, y el cliente pidió
+retirarla el 3 de agosto de 2026: quería que se reprodujera sin tener que pulsar
+nada. Lo que se conserva es el botón de pausa, que es lo que el criterio 2.2.2 de
+WCAG exige de verdad — una forma de pararlo, no que no empiece.
 
 **Tipografía y roles:** Britanny Signature (portada/hero únicamente), Intro
 Rust Line (titulares secundarios), Suranna itálica (taglines/eyebrows/citas
@@ -137,9 +165,12 @@ Evitar: anglicismos innecesarios, superlativos vacíos, tono corporativo genéri
 - [x] Auditoría de Web Interface Guidelines (Vercel) completa, 6 fixes aplicados
 - [x] Tarjeta del Club: el cliente aportó el render y ya está recortada y colocada
   (`public/images/club/tarjeta-1800.webp`)
-- [ ] Queda **una sola foto real**: `finca-familia.jpg`. Las 3 del portafolio usan los
-  renders del propio producto, así que no bloquean. Ese único hueco muestra hoy un panel
-  de marca en vez de un rectángulo vacío
+- [x] **Ya no queda ningún hueco de foto.** El último, el de `finca-familia.jpg`,
+  lo ocupa desde el 3 de agosto de 2026 un **bucle de vídeo mudo** del corredor de la
+  casa de la finca, recortado del comercial que aportó el cliente
+  (`public/video/finca-corredor.mp4`). Las 3 del portafolio usan los renders del
+  propio producto. Si algún día llega la foto de la familia, habrá que decidir si
+  sustituye al vídeo: ya no hay respaldo automático que la recoja sola
 - [ ] Testimonios reales pendientes
 - [x] `@bruma1800_cafe` **confirmada por el cliente** (3 de agosto de 2026) como la
   cuenta oficial. Vive en `INSTAGRAM_HANDLE` de `src/lib/content.ts` y de ahí sale a
