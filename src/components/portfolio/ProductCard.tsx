@@ -10,13 +10,12 @@ export default function ProductCard({ kicker, title, desc, precios, whatsapp, im
       {/* Render transparente del propio producto, no fotografía. Los tres
           mockups ya existían y solo se usaban en el hero; aquí ahorran la
           espera de las fotos reales sin recurrir a banco de imágenes, que la
-          marca prohíbe. `contain` porque van recortados a su alfa. */}
+          marca prohíbe. */}
       <MediaFrame
         src={image}
         alt={imageAlt}
         aspectClassName="aspect-[4/3]"
         radiusClassName="rounded-none"
-        fit="contain"
         sizes="(min-width: 980px) 33vw, (min-width: 720px) 50vw, 100vw"
       />
       <div className="p-8">

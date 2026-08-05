@@ -2,7 +2,7 @@
 
 import { useReveal } from "@/hooks/useReveal";
 import Wrap from "@/components/ui/Wrap";
-import MediaFrame from "@/components/ui/MediaFrame";
+import MediaVideo from "@/components/ui/MediaVideo";
 import { Eyebrow, H2Rust, Body } from "@/components/ui/Typography";
 import DecorOrigen from "@/components/decor/DecorOrigen";
 import { origen } from "@/lib/content";
@@ -16,13 +16,17 @@ export default function Origen() {
       <DecorOrigen />
 
       <Wrap className="relative z-10 grid items-center gap-12 md:grid-cols-2 md:gap-[72px]">
-        <MediaFrame
+        {/* El hueco de `finca-familia.jpg` lo ocupa ahora un plano real de la
+            finca, sacado del comercial que aportó el cliente. Es un bucle mudo
+            de ida y vuelta; el porqué del plano y del recorte, en
+            tools/preparar-video-origen.py. */}
+        <MediaVideo
           ref={mediaRef}
           data-reveal
-          src="/images/pending/finca-familia.jpg"
-          alt="Familia cafetera trabajando en la finca en Pijao"
+          src="/video/finca-corredor.mp4"
+          poster="/video/finca-corredor.webp"
+          label="corredor de la casa de la finca en Pijao, al atardecer"
           aspectClassName="order-2 aspect-[4/5] md:order-none md:aspect-auto md:h-[620px]"
-          sizes="(min-width: 980px) 50vw, 100vw"
         />
 
         <div ref={textRef} data-reveal-group>
