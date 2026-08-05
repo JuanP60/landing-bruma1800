@@ -147,7 +147,7 @@ export const cierrePortafolio = {
 export const calidad = {
   eyebrow: "Calidad validada",
   title: "LA TAZA LA CALIFICARON OTROS, NO NOSOTROS",
-  intro: "Origen 70 fue evaluada bajo protocolo SCA por dos catadores independientes, en dos lugares distintos.",
+  intro: "Cada proceso es evaluado bajo protocolo SCA por catadores certificados.",
   puntajes: [
     {
       valor: 87.5,
