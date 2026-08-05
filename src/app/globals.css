@@ -413,6 +413,81 @@ body {
   }
 }
 
+/* ---------- Bruma del Club 1800 ----------
+   Las mismas tres nubes del hero y **exactamente las mismas velocidades** —
+   deriva 150/98/64 s y vaivén 44/33/26 s—, pedidas por el cliente. Lo que
+   cambia es el reparto: otras alturas, otros mosaicos y otras fases, para que
+   no se lea como la misma imagen repetida más abajo.
+
+   Es una excepción al criterio de AGENTS.md, que reserva al Club un lenguaje
+   propio y sin el tratamiento de la marca principal. La pidió el cliente, igual
+   que en su día la flotación de la tarjeta.
+
+   **Las opacidades no son las del hero, y no por gusto.** Allí las nubes van
+   sobre azul bruma a 0,85/0,72/0,40. Aquí el fondo es casi negro (#0a0a0a) y
+   una nube blanca a esa opacidad no es bruma: es una mancha que levanta la
+   luminancia del fondo y se lleva por delante el contraste del texto plateado.
+
+   Los valores actuales salen de medir, no de estimar. El primer intento
+   —0,13/0,09/0,06— dejaba el eyebrow en **4,59:1** y el número en **4,53:1**
+   contra el mínimo de 4,5. Pasaba, pero por un 2%, y con unas nubes que derivan
+   sin parar ese margen significa que un rato después ya no pasa. Bajando la
+   capa alta a 0,09 y la media a 0,075 el peor caso sube a un margen cómodo y
+   la bruma se sigue leyendo.
+
+   Las dos primeras son las que importan: son las que pasan por detrás del texto.
+   La baja va por la zona de la tarjeta, que es opaca, y por eso puede ser la más
+   suelta sin que nadie lo pague. `tools/medir-contraste-club.mjs` lo comprueba
+   buscando el peor píxel detrás de cada línea en varios instantes del ciclo.
+   Si alguien sube estos números, hay que volver a correrlo. */
+.bruma--club .bruma__capa {
+  --op: 0.09;
+}
+.bruma__capa--club-alta {
+  --nube: url("/images/hero/nubes/nube-2.webp");
+  --aspecto: 2.86;
+  --mosaico: 1500px;
+  --t: 4%;
+  --op: 0.09;
+  --dur: 98s;
+  --delay: -12s;
+  --dur-v: 33s;
+  --bob: 20px;
+}
+.bruma__capa--club-media {
+  --nube: url("/images/hero/nubes/nube-3.webp");
+  --aspecto: 3.765;
+  --mosaico: 1180px;
+  --t: 42%;
+  --op: 0.075;
+  --dur: 64s;
+  --delay: -47s;
+  --dur-v: 26s;
+  --bob: -18px;
+}
+.bruma__capa--club-baja {
+  --nube: url("/images/hero/nubes/nube-1.webp");
+  --aspecto: 3.244;
+  --mosaico: 1900px;
+  --t: 72%;
+  --op: 0.06;
+  --dur: 150s;
+  --delay: -95s;
+  --dur-v: 44s;
+  --bob: 14px;
+}
+@media (max-width: 979px) {
+  .bruma__capa--club-alta {
+    --mosaico: 560px;
+  }
+  .bruma__capa--club-media {
+    --mosaico: 470px;
+  }
+  .bruma__capa--club-baja {
+    --mosaico: 700px;
+  }
+}
+
 /* ---------- Montaña del hero ---------- */
 .montana {
   position: absolute;
@@ -616,15 +691,64 @@ body {
    al Club un lenguaje sin movimiento — la excepción es la tarjeta, no la
    sección: el texto y el botón siguen entrando con su fade largo y quieto.
 
-   El ciclo es de 9 s, más lento que cualquier mockup del hero (6,5–8,5 s), y
-   el recorrido menor. Un objeto de este peso visual moviéndose al ritmo de una
-   bolsa de café se leería nervioso. */
+   El ciclo sigue siendo de 9 s, más lento que cualquier mockup del hero
+   (6,5–8,5 s): un objeto de este peso visual moviéndose al ritmo de una bolsa
+   de café se lee nervioso.
+
+   **El recorrido subió de 16 a 30 px a petición del cliente**, porque a 16 px
+   apenas se notaba. Lo que se tocó es la amplitud, no la duración: alargar el
+   viaje dentro del mismo ciclo hace el movimiento más visible sin volverlo
+   inquieto, que es lo que habría pasado acelerándolo.
+
+   Va acompañado de una escala mínima —un 2% al llegar arriba— para que además
+   de subir parezca acercarse. Es lo que vende la levitación en un fondo negro:
+   aquí la sombra no puede ayudar, porque una sombra sobre negro no se ve, así
+   que el trabajo lo hace la perspectiva. `translate` y `scale` son propiedades
+   independientes y se animan en el mismo keyframe sin pisarse. La escala se
+   calcula desde `--amp-scale`, así que con `reduce` se achica sola junto con
+   el recorrido y no hay dos sitios que acordarse de tocar. */
 .tarjeta-club {
-  --amp: -16px;
+  --amp: -30px;
   --dur: 9s;
   position: relative;
   animation: tarjeta-flotar var(--dur) ease-in-out infinite;
   will-change: transform;
+}
+
+/* ---------- Inclinación 3D que sigue al cursor o al dedo ----------
+   Envuelve a la tarjeta en vez de ir sobre ella, y no es por gusto: sobre la
+   propia `.tarjeta-club` no funciona. GSAP deja un `transform` **en línea** al
+   revelarla —una foto congelada de la flotación, sin rotación— y el estilo en
+   línea gana siempre a la hoja de estilos, así que la inclinación no llegaba a
+   aplicarse nunca. Es el gotcha 5 del proyecto original asomando por otro lado.
+
+   La solución es la de siempre en esta casa: repartir los movimientos entre dos
+   elementos, como la rama de cafeto (giro base en el <img>, animación en el
+   <span> de fuera). Aquí el envoltorio se inclina y la tarjeta de dentro sigue
+   flotando y brillando, cada una en su elemento y sin pisarse.
+
+   `useTilt3D` solo escribe `--tx` y `--ty`, de -1 a 1. Los grados se deciden
+   aquí, en un único sitio: así `prefers-reduced-motion` los recorta sin que el
+   hook tenga que enterarse de nada.
+
+   La perspectiva de 400px es cerrada para una tarjeta de ~515px de ancho, así
+   que 5 grados se notan bastante. Es el valor del patrón de referencia; para
+   suavizarlo sin tocar el ángulo, subir la distancia (600-800px). */
+.tarjeta-club-3d {
+  --tilt: 5deg;
+  transform: perspective(400px) rotateX(calc(var(--ty, 0) * var(--tilt)))
+    rotateY(calc(var(--tx, 0) * var(--tilt)));
+  /* Solo se nota al soltar: mientras el puntero manda, la clase de abajo la
+     apaga. La curva se pasa de 1 y vuelve, que es lo más parecido a un resorte
+     sin meter una librería de física. */
+  transition: transform 620ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+/* Mientras el cursor o el dedo mandan, la tarjeta va pegada a ellos: cualquier
+   transición aquí se leería como retardo, no como suavizado. */
+.tarjeta-club-3d.esta-inclinandose {
+  transition: none;
 }
 .tarjeta-club img {
   display: block;
@@ -705,9 +829,11 @@ body {
   0%,
   100% {
     translate: 0 0;
+    scale: 1;
   }
   50% {
     translate: 0 calc(var(--amp) * var(--amp-scale, 1));
+    scale: calc(1 + 0.02 * var(--amp-scale, 1));
   }
 }
 
@@ -743,12 +869,20 @@ body {
     --amp-scale: 0.5;
     animation-duration: 1.8s;
   }
-  /* La tarjeta conserva su flotación a media amplitud. El barrido de luz sí se
-     alarga mucho y se atenúa: un destello que cruza es lo más parecido a un
-     parpadeo que hay en la página, y ahí `reduce` sí tiene razón. */
+  /* La tarjeta conserva su flotación a media amplitud —15 px de los 30, y con
+     ella la mitad de la escala, que se calcula del mismo `--amp-scale`. El
+     barrido de luz sí se alarga mucho y se atenúa: un destello que cruza es lo
+     más parecido a un parpadeo que hay en la página, y ahí `reduce` sí tiene
+     razón. */
   .tarjeta-club {
     --amp-scale: 0.5;
     animation-duration: 14s;
+  }
+  /* La inclinación no se apaga: la provoca el propio usuario moviendo el cursor,
+     no ocurre sola, y quitarla dejaría la tarjeta muerta al tocarla. Se recorta
+     a la mitad, mismo criterio que el recorrido de la flotación. */
+  .tarjeta-club-3d {
+    --tilt: 2.5deg;
   }
   /* Se alarga el ciclo, no la duración: así el destello del cursor se alarga
      con él y los dos siguen igualados también con `reduce` activo. */

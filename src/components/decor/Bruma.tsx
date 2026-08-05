@@ -24,3 +24,20 @@ export function BrumaFront() {
     </div>
   );
 }
+
+/**
+ * Las mismas tres nubes en la sección del Club, a las mismas velocidades pero
+ * con otro reparto de alturas, mosaicos y fases. Van **todas por detrás** del
+ * contenido: en el hero una capa pasa por delante del texto, pero sobre el
+ * negro del Club eso emborronaría el plateado, que es justo lo que la sección
+ * no puede permitirse. Opacidades y porqués, en `.bruma--club` de globals.css.
+ */
+export function BrumaClub() {
+  return (
+    <div className="bruma bruma--club" aria-hidden="true">
+      <span className="bruma__capa bruma__capa--club-alta" />
+      <span className="bruma__capa bruma__capa--club-media" />
+      <span className="bruma__capa bruma__capa--club-baja" />
+    </div>
+  );
+}
