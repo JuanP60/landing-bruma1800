@@ -83,6 +83,11 @@ el botón entran con un fade largo, sin desplazamiento ni cascada.
 >    nuevas**. Va sobre un envoltorio, `.tarjeta-club-3d`, y no sobre la tarjeta
 >    misma — GSAP le deja un `transform` en línea que gana a la hoja de estilos.
 >    Ver `handoff.md` §2.11.
+>
+>    Tres cosas de esta tarjeta están **cerradas por el cliente** y no se tocan
+>    por iniciativa propia: los ±5° con `perspective(400px)` se quedan aunque el
+>    efecto se note; en móvil el dedo sobre la tarjeta la inclina y **no**
+>    desplaza la página; y su entrada sigue sin desplazamiento ni cascada.
 > 3. La sección lleva **las mismas nubes del hero**, a las mismas velocidades y
 >    con otro reparto de alturas y fases. Sus opacidades son mucho más bajas
 >    (0,09 / 0,075 / 0,06 frente a 0,85 / 0,72 / 0,40) porque sobre el negro del

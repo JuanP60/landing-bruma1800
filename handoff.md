@@ -422,9 +422,11 @@ sigue flotando y brillando dentro. Ninguna pisa a la otra.
 
 Detalles que importan:
 
-- **±5°** y `perspective(400px)`, los valores del patrón de referencia. Para una
-  tarjeta de ~515 px esa perspectiva es cerrada y el efecto se nota bastante; si
-  hay que suavizarlo, subir la distancia (600–800 px) antes que bajar el ángulo.
+- **±5°** y `perspective(400px)`, los valores del patrón de referencia.
+  **Confirmados por el cliente el 3 de agosto de 2026**, después de verlos
+  funcionando: se avisó de que para una tarjeta de ~515 px esa perspectiva es
+  cerrada y el efecto se nota bastante, y aun así se quedan. Si algún día hay que
+  suavizarlo, subir la distancia (600–800 px) antes que bajar el ángulo.
 - La transición con rebote (`cubic-bezier(0.34, 1.56, 0.64, 1)`, 620 ms) **solo
   actúa al soltar**: mientras el puntero manda, la clase `.esta-inclinandose` la
   apaga. Con transición activa durante el movimiento se leería como retardo.
@@ -432,7 +434,9 @@ Detalles que importan:
   obligatorio: sin esa opción el navegador ignora el `preventDefault` y avisa por
   consola. Ojo, esto significa que **arrastrar el dedo sobre la tarjeta no
   desplaza la página**; en móvil la tarjeta ocupa casi todo el ancho, así que es
-  una decisión con coste. Está pedida así.
+  una decisión con coste. **Confirmada por el cliente el 3 de agosto de 2026**
+  con el coste sobre la mesa: quiere que el dedo incline la tarjeta y no
+  arrastre. No revertirlo por iniciativa propia.
 - El movimiento se acumula en un `requestAnimationFrame`: `mousemove` dispara
   mucho más a menudo de lo que la pantalla pinta.
 
@@ -457,10 +461,12 @@ el evento sale cancelado y la página no se desplaza.
 - **El desplazamiento vertical en la entrada tampoco se aplicó.** La tarjeta ya
   se revela al hacer scroll, pero con fade largo **sin desplazamiento y sin
   cascada**, que es el lenguaje propio del Club documentado en `AGENTS.md` y en
-  `useClubReveal`. Añadirle desplazamiento contradice esa decisión de marca, así
-  que se deja como está hasta que el cliente diga lo contrario.
+  `useClubReveal`. Añadirle desplazamiento contradice esa decisión de marca, y el
+  cliente **confirmó el 3 de agosto de 2026 que se queda así**. El asunto está
+  cerrado: la entrada de la tarjeta no lleva desplazamiento ni cascada.
 - El botón de mostrar/ocultar tipo «ojo» se omitió, como se pidió: no hay
   información que ocultar en esta tarjeta.
+
 ---
 
 ## 3. Bugs encontrados y corregidos en la migración
