@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Wrap from "@/components/ui/Wrap";
 import Button from "@/components/ui/Button";
+import Nav from "@/components/ui/Nav";
 import { Eyebrow } from "@/components/ui/Typography";
 import Montana from "@/components/decor/Montana";
 import { BrumaBack, BrumaFront } from "@/components/decor/Bruma";
@@ -50,11 +51,19 @@ export default function Hero() {
   const cicloRef = useCiclo();
 
   return (
-    <header className="hero relative bg-niebla pt-10 pb-[72px] md:pt-14 md:pb-24">
+    <header id="inicio" className="hero relative bg-niebla pt-10 pb-[72px] md:pt-14 md:pb-24">
       <Montana />
       <BrumaBack />
 
       <Wrap className="relative z-10">
+        {/* El menú va en su propia fila, encima del logo, y no al lado. Medido:
+            compartiendo fila ocupa 619 px a 1440 y el sobre de Drip empieza en
+            x=1058, así que se pisaban 212 px y «Quiénes somos» y «Club 1800»
+            quedaban detrás de los mockups. Poniéndolo arriba, todo el bloque
+            baja con él y la composición flotante del hero —que está afinada a
+            mano y no se toca— conserva sus distancias. */}
+        <Nav />
+
         <Image
           ref={logoRef}
           data-hero-logo
@@ -63,7 +72,7 @@ export default function Hero() {
           width={518}
           height={232}
           priority
-          className="h-16 w-auto md:h-[92px]"
+          className="mt-7 h-16 w-auto md:mt-9 md:h-[92px]"
         />
 
         <div className="mt-12 grid gap-12 md:mt-[72px] md:grid-cols-[1.05fr_1fr] md:items-center md:gap-16">

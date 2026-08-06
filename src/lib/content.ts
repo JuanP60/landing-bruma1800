@@ -22,7 +22,45 @@ export const whatsappLinks = {
   drip: waLink("Hola, quiero pedir Drip Coffee"),
   aguijon: waLink("Avísenme cuando salga Aguijón"),
   portafolioCierre: waLink("Hola, ¿cuál lote está en su punto?"),
+  melipona: waLink("Hola, quiero información de la línea Melipona"),
   ctaFinal: waLink("Hola BRUMA1800"),
+};
+
+/**
+ * Menú del header. El orden es el que pidió el cliente y **no coincide con el
+ * orden de la página**: «Quiénes somos» es la segunda sección pero va cuarta en
+ * el menú. Es su menú, así que manda su orden.
+ *
+ * `Inicio` apunta a la ventana actual y se marca con `aria-current="page"`.
+ */
+export const menu = [
+  { label: "Inicio", href: "#inicio", actual: true },
+  { label: "Productos", href: "#portafolio" },
+  { label: "Línea Melipona", href: "#melipona" },
+  { label: "Quiénes somos", href: "#quienes-somos" },
+  { label: "Club 1800", href: "#club" },
+] as const;
+
+/**
+ * BORRADOR pendiente de aprobación del cliente. Todo lo que hay aquí sale de
+ * los hechos verificados de `AGENTS.md` —programa de distribución, pedido
+ * mínimo de $200.000 COP, precio fijo sin excepciones y disponibilidad sujeta a
+ * cosecha— y **nada más**. No se ha añadido a quién va dirigido, ni descuentos,
+ * ni plazos, ni condiciones: eso no está verificado y la regla de marca prohíbe
+ * inventarlo. Si el cliente quiere más, lo tiene que dictar él.
+ */
+export const melipona = {
+  eyebrow: "Distribución",
+  title: "LÍNEA MELIPONA",
+  intro:
+    "El programa con el que BRUMA1800 atiende los pedidos por volumen. Las condiciones son las mismas para todos y no se negocian caso por caso.",
+  datos: [
+    { num: "$200.000", label: "pedido mínimo, en pesos colombianos" },
+    { num: "PRECIO FIJO", label: "sin excepciones ni descuentos por cantidad" },
+    { num: "SEGÚN COSECHA", label: "la disponibilidad depende de lo que dé la finca" },
+  ],
+  cta: "Preguntar por Melipona",
+  whatsapp: whatsappLinks.melipona,
 };
 
 export const hero = {

@@ -166,6 +166,129 @@
   margin-top: 24px;
 }
 
+/* ============================================================
+   MENÚ DEL HEADER
+   Vive dentro del hero, que es el `<header>` de la página. El color va en
+   `--cafe-profundo` y no en `--tierra`: el fondo es azul bruma y ahí `--tierra`
+   se queda en 3.95:1, por debajo del mínimo. Café profundo da 8.48:1.
+
+   Sin naranja. El acento único de esta pieza ya lo gasta el CTA principal del
+   hero, y la regla de marca es un solo uso por pieza: el subrayado del menú va
+   en el propio color del texto.
+   ============================================================ */
+.nav__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 26px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* Fila propia arriba del todo, alineada al margen izquierdo con el logo. */
+.nav {
+  padding-top: 2px;
+}
+.nav__enlace {
+  display: inline-block;
+  padding: 6px 0;
+  font-family: var(--nf-editorial), serif;
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cafe-profundo);
+  position: relative;
+}
+/* El subrayado crece desde la izquierda al pasar el cursor. La pestaña de la
+   ventana actual lo lleva puesto de fábrica. */
+.nav__enlace::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1.5px;
+  width: 100%;
+  background: currentColor;
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav__enlace:hover::after,
+.nav__enlace:focus-visible::after,
+.nav__enlace[aria-current="page"]::after {
+  scale: 1 1;
+}
+.nav__enlace[aria-current="page"] {
+  font-weight: 700;
+}
+
+/* El botón solo existe en pantallas estrechas. */
+.nav__boton {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--nf-editorial), serif;
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cafe-profundo);
+}
+.nav__rayas {
+  display: grid;
+  gap: 4px;
+  width: 22px;
+}
+.nav__rayas span {
+  display: block;
+  height: 1.5px;
+  background: currentColor;
+  transition:
+    translate 0.22s ease,
+    rotate 0.22s ease,
+    opacity 0.22s ease;
+}
+/* Abierto, las tres rayas se cruzan en aspa. */
+.nav__rayas[data-abierto="true"] span:first-child {
+  translate: 0 5.5px;
+  rotate: 45deg;
+}
+.nav__rayas[data-abierto="true"] span:nth-child(2) {
+  opacity: 0;
+}
+.nav__rayas[data-abierto="true"] span:last-child {
+  translate: 0 -5.5px;
+  rotate: -45deg;
+}
+
+@media (max-width: 899px) {
+  .nav__boton {
+    display: inline-flex;
+  }
+  /* Plegado: se oculta con `display` y no solo con opacidad, para que el
+     tabulador no se meta dentro de un menú cerrado. */
+  .nav__lista {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid color-mix(in srgb, var(--cafe-profundo) 18%, transparent);
+  }
+  .nav__lista[data-abierto="true"] {
+    display: flex;
+  }
+  .nav__enlace {
+    padding: 10px 0;
+    font-size: 16px;
+  }
+}
+
 /* ---------- La abeja del CTA de portafolio ----------
    Al pasar el cursor o al pulsar, sale volando la misma abeja en acuarela de
    la sección de origen. No es un icono nuevo: es el archivo de marca que ya

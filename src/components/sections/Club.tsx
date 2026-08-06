@@ -14,7 +14,7 @@ export default function Club() {
   const tarjetaRef = useTilt3D<HTMLDivElement>();
 
   return (
-    <section className="club relative overflow-hidden bg-club-negro py-20 md:py-28">
+    <section id="club" className="club relative overflow-hidden bg-club-negro py-20 md:py-28">
       <BrumaClub />
 
       <Wrap ref={gridRef} className="relative z-10 grid items-center gap-12 md:grid-cols-[1.05fr_1fr] md:gap-16">

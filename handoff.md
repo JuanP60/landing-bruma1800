@@ -518,6 +518,61 @@ pulsar, y **de vuelta a oculta al salir**. Sin desborde horizontal.
 
 ---
 
+### 2.13 Menú del header, y la sección Melipona que hizo falta para tenerlo
+
+El cliente pidió cinco pestañas: **Inicio · Productos · Línea Melipona · Quiénes
+somos · Club**. Cuatro tenían destino. **Línea Melipona no existía en la
+página**: era un dato verificado de `AGENTS.md` —programa de distribución, pedido
+mínimo de $200.000 COP, precio fijo sin excepciones, disponibilidad sujeta a
+cosecha— sin sección, sin copy y sin nada a lo que enlazar. El cliente eligió
+crear la sección.
+
+> **El copy de Melipona es un borrador pendiente de su aprobación.** Sale
+> entero de esos hechos verificados y de nada más: no dice a quién va dirigido
+> el programa, ni plazos, ni condiciones de pago, porque eso no está verificado
+> y la regla de marca prohíbe inventarlo. Está marcado como borrador en
+> `lib/content.ts` y en el componente.
+
+La pestaña se etiquetó **Club 1800** y no «Club 18:00»: el titular de la sección
+dice CLUB 1800 y «1800 · 18:00» es su tagline, así que el menú y el destino
+coinciden. Lo confirmó el cliente.
+
+**El menú va en su propia fila, encima del logo.** Compartiendo fila con él
+ocupaba 619 px a 1440 y el sobre de Drip empieza en x=1058: se pisaban 212 px y
+«Quiénes somos» y «Club 1800» quedaban detrás de los mockups. Poniéndolo arriba,
+todo el bloque baja con él y la composición flotante —afinada a mano, no se
+toca— conserva sus distancias. Verificado con **0 solapes** a 1280, 1440 y 1920.
+
+Detalles del componente (`ui/Nav.tsx`):
+
+- **Una sola lista de enlaces**, que en escritorio es una fila y por debajo de
+  900 px se pliega tras un botón. Duplicar el `<ul>` para tener versión de
+  escritorio y de móvil habría dejado diez enlaces en el documento, y un lector
+  de pantalla los lee todos aunque la mitad estén ocultos.
+- Son anclas de la misma página: el desplazamiento suave ya lo da
+  `scroll-behavior: smooth`, que se apaga solo con `prefers-reduced-motion`. No
+  hace falta JS para eso.
+- `aria-current="page"` en Inicio: la pestaña de la ventana actual se anuncia,
+  no se deja solo al color.
+- Mismo criterio de accesibilidad que el widget del chat: `aria-expanded`,
+  `aria-controls`, Escape cierra y **el foco vuelve al botón**.
+- El plegado se oculta con `display` y no solo con opacidad, para que el
+  tabulador no entre en un menú cerrado. Medido: **0 enlaces alcanzables** con el
+  menú cerrado a 390, 5 a 1440.
+- Color en `--cafe-profundo` y no `--tierra`: el fondo es azul bruma y ahí
+  `--tierra` se queda en 3.95:1. Y sin naranja, que el acento único de la pieza
+  ya lo gasta el CTA principal del hero.
+
+**El orden del menú no es el de la página.** El cliente pidió «Quiénes somos» en
+cuarta posición y en la página Origen sigue siendo la segunda sección. Es su
+menú, así que manda su orden; queda anotado para que no se lea como un error.
+
+**Verificado** a 390, 768, 900, 1280, 1440 y 1920: los cinco destinos existen, el
+botón aparece exactamente por debajo de 900 px, 0 desborde, y el salto deja la
+sección con su borde superior en 0.
+
+---
+
 ## 3. Bugs encontrados y corregidos en la migración
 
 Dos rondas de QA después del primer build: una comparando colores contra el
@@ -717,7 +772,9 @@ futura de este proyecto:
 - Contraste de Calidad sobre verde montaña, a 390 y 1440: peor caso **4,72:1**
   (eyebrow, intro, protocolo SCA y «quien»), **5,64:1** el resto. Mínimos 4,5,
   y 3 para titular y puntaje, que son texto grande.
-- 7/7 enlaces de WhatsApp a `573152103231`, con `?text=` diferenciado por sección.
+- **8/8** enlaces de WhatsApp a `573152103231`, con `?text=` diferenciado por
+  sección. Eran 7 hasta que la sección Melipona añadió el suyo (§2.13); si en el
+  sitio estático siguen siendo 7, es por eso y no por una divergencia.
 - Puntajes SCA `87.5|83.0`.
 - Destello: cruza en **1062 ms** solo y **1067 ms** con el cursor encima.
 

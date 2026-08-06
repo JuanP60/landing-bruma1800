@@ -166,6 +166,11 @@ Evitar: anglicismos innecesarios, superlativos vacíos, tono corporativo genéri
    testimonios reales todavía, no rellenar con citas inventadas.
 5. Todo el copy, precios y links vive en `src/lib/content.ts` — cambios de
    contenido van ahí, no repartidos en JSX.
+6. **El copy de la sección Melipona es un borrador sin aprobar.** Se escribió el
+   3 de agosto de 2026 para dar destino a la pestaña del menú, usando solo los
+   hechos verificados de más abajo. No añadir a quién va dirigido el programa,
+   plazos ni condiciones de pago mientras el cliente no los dicte. Ver
+   `handoff.md` §2.13.
 
 ## Estado actual
 

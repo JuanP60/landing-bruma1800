@@ -12,7 +12,10 @@ export default function Origen() {
   const textRef = useReveal<HTMLDivElement>("group");
 
   return (
-    <section className="origen relative overflow-hidden bg-piedra-calida pt-[160px] pb-20 md:py-28">
+    <section
+      id="quienes-somos"
+      className="origen relative overflow-hidden bg-piedra-calida pt-[160px] pb-20 md:py-28"
+    >
       <DecorOrigen />
 
       <Wrap className="relative z-10 grid items-center gap-12 md:grid-cols-2 md:gap-[72px]">
