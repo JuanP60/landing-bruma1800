@@ -393,7 +393,6 @@ de fondo en movimiento declaran cuántas muestras necesitan; las de color plano,
 una. Se hizo al necesitar lo mismo para Calidad: dos copias de 120 líneas casi
 iguales envejecen mal.
 
-
 ### 2.11 Inclinación 3D de la tarjeta, siguiendo al cursor
 
 Petición del cliente, a partir de un patrón de referencia hecho en React +
@@ -412,7 +411,7 @@ la hoja de estilos. El resultado era que `--tx` y `--ty` cambiaban correctamente
 la tarjeta no se movía ni un grado. Es el gotcha 5 del proyecto original asomando
 por otro lado, y se ve en el estilo calculado:
 
-```
+```css
 transform: translate3d(0px, -5.85px, 0px) scale(1.0039) matrix3d(…, -0.0025, …)
 ```
 
@@ -466,6 +465,56 @@ el evento sale cancelado y la página no se desplaza.
   cerrado: la entrada de la tarjeta no lleva desplazamiento ni cascada.
 - El botón de mostrar/ocultar tipo «ojo» se omitió, como se pidió: no hay
   información que ocultar en esta tarjeta.
+
+---
+
+### 2.12 La abeja del CTA de portafolio
+
+Petición del cliente: que al pasar el cursor —o al pulsar en móvil— salga la
+abeja que ya se usaba. Es literalmente **el mismo archivo** de la sección de
+origen (`/images/decor/abeja.webp`) y aletea con **los mismos keyframes**
+(`abeja-aletear`), así que se lee como el mismo bicho y no como un icono nuevo.
+
+Va solo en el CTA del cierre de portafolio (`abeja` como prop del `Button`).
+Los otros seis enlaces de WhatsApp no la llevan: aquí tiene sentido porque la
+sección habla de Aguijón y de las abejas que polinizan el cafetal, y repetirla
+en toda la página la gastaría.
+
+- Entra desde abajo y desde la derecha, con la misma curva de rebote que la
+  tarjeta del Club. Aletea **solo mientras se ve** (`animation-play-state`), que
+  no tiene sentido aletear para nadie.
+- El `hover` va acotado a `(hover: hover) and (pointer: fine)`. En táctil el
+  hover se queda pegado después de tocar y la abeja no se iría nunca; ahí manda
+  la clase `.esta-pulsado`, que el componente pone y quita con eventos de
+  puntero. Se usan eventos de puntero y no `:active` porque en iOS `:active` no
+  se aplica de forma fiable a un `<a>`.
+- También sale con `:focus-visible`, para quien llega al CTA con el tabulador.
+- Con `reduce` no se apaga —la saca el usuario, no aparece sola— pero llega con
+  menos vuelo y aletea más despacio, igual que su hermana de origen.
+
+**El pulsado oscurece el botón en vez de hundirlo, y eso es un arreglo.** La
+primera versión usaba `scale: 0.97`. Si el usuario pulsaba mientras el reveal de
+la sección seguía corriendo, el botón se quedaba hundido **para siempre**:
+`useReveal` anima ese mismo elemento y su `clearProps` congela lo que encuentre
+en la familia `transform`, dejando un `transform: scale(0.97)` en línea que ya no
+se va. Es el gotcha 5 otra vez, y la regla general que deja es:
+
+> Sobre un elemento que GSAP revela, el CSS propio tiene que mantenerse fuera de
+> `transform`, `translate`, `rotate` y `scale`. `filter` es terreno libre.
+
+**Verificado** con `tools/medir-abeja-cta.mjs` a 390 y 1440, y con `reduce`:
+oculta en reposo, visible y aleteando con el cursor encima, botón atenuado al
+pulsar, y **de vuelta a oculta al salir**. Sin desborde horizontal.
+
+> Dos trampas de medición, las dos por la misma vía. La primera versión del
+> script recorría varios anchos en la misma pestaña y daba números falsos: se
+> quedaba el botón del ratón pulsado entre iteraciones y arrastraba la escala de
+> la emulación anterior (medía 53 px donde el CSS pide 46). Y al pulsar de
+> verdad, como el CTA es un enlace con `target="_blank"`, **se abría WhatsApp en
+> otra pestaña y esta pasaba a segundo plano, donde Chrome congela las
+> transiciones CSS**: la abeja parecía quedarse pegada para siempre. No lo
+> estaba. El script cierra ahora la pestaña que se abre y recupera el primer
+> plano antes de seguir midiendo.
 
 ---
 

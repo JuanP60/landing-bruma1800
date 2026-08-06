@@ -92,10 +92,17 @@ el botón entran con un fade largo, sin desplazamiento ni cascada.
 >    con otro reparto de alturas y fases. Sus opacidades son mucho más bajas
 >    (0,09 / 0,075 / 0,06 frente a 0,85 / 0,72 / 0,40) porque sobre el negro del
 >    Club una nube blanca se come el contraste del texto plateado. **Están medidas**
->    con `tools/medir-contraste-club.mjs`; quien las suba, que vuelva a correrlo.
+>    con `tools/medir-contraste.mjs`; quien las suba, que vuelva a correrlo.
 >
 > Lo demás de la sección sigue quieto: el texto y el botón entran con su fade
 > largo, sin desplazamiento ni cascada.
+
+**Regla general que dejaron la tarjeta y la abeja del CTA:** sobre un elemento
+que GSAP revela (`useReveal`, `useClubReveal`), el CSS propio tiene que
+mantenerse **fuera de `transform`, `translate`, `rotate` y `scale`**. GSAP se
+apropia de esa familia y su `clearProps` congela lo que encuentre, dejando un
+estilo en línea que ya no se va. `filter` y `opacity` son terreno libre, y para
+lo demás, envolver el elemento. Ver `handoff.md` §2.11 y §2.12.
 
 **Movimiento y `prefers-reduced-motion`:** la regla de la casa es *atenuar, nunca
 apagar* — Windows manda `reduce` de fábrica y aplicarla al pie de la letra dejaría

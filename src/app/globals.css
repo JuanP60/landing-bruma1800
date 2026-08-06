@@ -166,6 +166,89 @@
   margin-top: 24px;
 }
 
+/* ---------- La abeja del CTA de portafolio ----------
+   Al pasar el cursor o al pulsar, sale volando la misma abeja en acuarela de
+   la sección de origen. No es un icono nuevo: es el archivo de marca que ya
+   estaba, y aletea con los mismos keyframes (`abeja-aletear`), así que se lee
+   como el mismo bicho y no como un adorno distinto.
+
+   Va acotado a `.btn--abeja` a propósito. Los otros seis CTA de WhatsApp no lo
+   llevan: la abeja aquí tiene sentido porque la sección habla de Aguijón y de
+   las abejas que polinizan el cafetal, y repetirla en toda la página la
+   gastaría. */
+.btn--abeja {
+  position: relative;
+  /* El pulsado oscurece el botón un punto. Es el gesto al que se engancha la
+     abeja, y no existía: `.btn` solo cambiaba de color al pasar el cursor.
+
+     **Es brillo y no una escala a propósito.** La primera versión hundía el
+     botón con `scale: 0.97` y se quedaba hundido para siempre si el usuario lo
+     pulsaba mientras el reveal de la sección seguía corriendo: `useReveal`
+     anima este mismo elemento y su `clearProps` congela lo que encuentre en la
+     familia `transform`, dejando un `transform: scale(0.97)` en línea que ya no
+     se va. Es el gotcha 5 del proyecto original. Sobre un elemento que GSAP
+     revela, el CSS propio tiene que mantenerse fuera de `transform`,
+     `translate`, `rotate` y `scale`; `filter` es terreno libre. */
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    filter 0.18s ease;
+}
+.btn--abeja.esta-pulsado {
+  filter: brightness(0.92);
+}
+.btn__abeja {
+  position: absolute;
+  right: 8%;
+  /* Apoyada sobre el borde superior, mordiéndolo un poco. */
+  bottom: calc(100% - 12px);
+  width: clamp(34px, 4.4vw, 46px);
+  pointer-events: none;
+  opacity: 0;
+  /* Entra desde abajo y desde la derecha, como si llegara al botón. */
+  translate: 16px 12px;
+  rotate: -14deg;
+  transition:
+    opacity 0.24s ease,
+    translate 0.44s cubic-bezier(0.34, 1.56, 0.64, 1),
+    rotate 0.44s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.btn__abeja img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.btn__abeja-aleteo {
+  display: block;
+  animation: abeja-aletear 1.1s ease-in-out infinite;
+  /* Quieta mientras no se ve: no tiene sentido aletear para nadie. */
+  animation-play-state: paused;
+}
+/* El hover solo en punteros finos: en táctil se queda pegado después de tocar
+   y la abeja no se iría nunca. Ahí manda `.esta-pulsado`, que el componente
+   pone y quita con eventos de puntero. */
+@media (hover: hover) and (pointer: fine) {
+  .btn--abeja:hover .btn__abeja,
+  .btn--abeja:focus-visible .btn__abeja {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  .btn--abeja:hover .btn__abeja-aleteo,
+  .btn--abeja:focus-visible .btn__abeja-aleteo {
+    animation-play-state: running;
+  }
+}
+.btn--abeja.esta-pulsado .btn__abeja {
+  opacity: 1;
+  translate: 0 0;
+  rotate: 0deg;
+}
+.btn--abeja.esta-pulsado .btn__abeja-aleteo {
+  animation-play-state: running;
+}
+
 /* ============================================================
    CAPA DE ANIMACIÓN
    Portada casi verbatim desde el sitio estático original. Son piezas
@@ -867,6 +950,16 @@ body {
   }
   .decor__abeja-aleteo {
     --amp-scale: 0.5;
+    animation-duration: 1.8s;
+  }
+  /* La abeja del CTA no se apaga —la saca el propio usuario al pasar el cursor
+     o al pulsar, no aparece sola— pero llega con menos vuelo y aletea más
+     despacio, mismo criterio que su hermana de origen. */
+  .btn__abeja {
+    translate: 6px 5px;
+    rotate: -5deg;
+  }
+  .btn__abeja-aleteo {
     animation-duration: 1.8s;
   }
   /* La tarjeta conserva su flotación a media amplitud —15 px de los 30, y con

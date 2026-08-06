@@ -68,7 +68,9 @@ export default function Portafolio() {
           className="mt-14 flex flex-wrap items-center justify-between gap-6 border-t border-cafe-profundo/14 pt-10"
         >
           <p className="font-editorial max-w-[52ch] text-[22px] leading-[1.6] text-cafe-profundo italic">{cierrePortafolio.text}</p>
-          <Button variant="primary" href={cierrePortafolio.whatsapp} external>
+          {/* La abeja sale de aquí y no de los otros CTA: esta sección habla de
+              Aguijón y de las abejas que polinizan el cafetal. Ver `.btn--abeja`. */}
+          <Button variant="primary" href={cierrePortafolio.whatsapp} external abeja>
             {cierrePortafolio.cta}
           </Button>
         </div>
