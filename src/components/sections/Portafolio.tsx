@@ -8,7 +8,8 @@ import { useReveal } from "@/hooks/useReveal";
 import ProductCard from "@/components/portfolio/ProductCard";
 import { aguijon, cards, cierrePortafolio } from "@/lib/content";
 
-export default function Portafolio() {
+/** `comoPagina`: ver la nota en `Melipona.tsx` — el titular sube a `<h1>`. */
+export default function Portafolio({ comoPagina }: { comoPagina?: boolean }) {
   const introRef = useReveal<HTMLDivElement>("group");
   const cardsRef = useReveal<HTMLDivElement>("group");
   const aguijonRef = useReveal<HTMLElement>("single");
@@ -20,7 +21,7 @@ export default function Portafolio() {
       <Wrap>
         <div ref={introRef} data-reveal-group>
           <Eyebrow>Portafolio</Eyebrow>
-          <H2Rust>LO QUE SALE DE LA COSECHA</H2Rust>
+          <H2Rust as={comoPagina ? "h1" : "h2"}>LO QUE SALE DE LA COSECHA</H2Rust>
           <Body intro>Tres líneas de café, cada una con su propósito en la taza. Los pedidos están sujetos a disponibilidad de cosecha.</Body>
         </div>
 

@@ -9,9 +9,11 @@ import { useTilt3D } from "@/hooks/useTilt3D";
 import { BrumaClub } from "@/components/decor/Bruma";
 import { club, INSTAGRAM_URL } from "@/lib/content";
 
-export default function Club() {
+/** `comoPagina`: ver la nota en `Melipona.tsx` — el titular sube a `<h1>`. */
+export default function Club({ comoPagina }: { comoPagina?: boolean }) {
   const gridRef = useClubReveal();
   const tarjetaRef = useTilt3D<HTMLDivElement>();
+  const Titular = comoPagina ? "h1" : "h2";
 
   return (
     <section id="club" className="club relative overflow-hidden bg-club-negro py-20 md:py-28">
@@ -20,7 +22,9 @@ export default function Club() {
       <Wrap ref={gridRef} className="relative z-10 grid items-center gap-12 md:grid-cols-[1.05fr_1fr] md:gap-16">
         <div data-reveal-club>
           <Eyebrow variant="club">{club.eyebrow}</Eyebrow>
-          <h2 className="font-titulo mb-3 text-[clamp(38px,7vw,56px)] leading-[1.05] text-club-plata">{club.title}</h2>
+          <Titular className="font-titulo mb-3 text-[clamp(38px,7vw,56px)] leading-[1.05] text-club-plata">
+            {club.title}
+          </Titular>
           <p className="mb-7 text-[22px] tracking-[0.24em] text-club-gris">{club.numero}</p>
           <p className="mb-5 text-[16.5px] leading-[1.85] text-club-plata-media">{club.text}</p>
           <p className="font-editorial mb-[34px] border-t border-club-plata/20 pt-[22px] text-[19px] leading-[1.7] text-white italic">

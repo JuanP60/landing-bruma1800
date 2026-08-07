@@ -19,7 +19,10 @@ import { melipona } from "@/lib/content";
  * iguales a las de Origen) en vez de inventar una maqueta propia: es una
  * sección de servicio, no una pieza de portada.
  */
-export default function Melipona() {
+/** `comoPagina`: esta sección es el cuerpo de `/melipona` y su titular pasa a
+ *  ser el `<h1>` del documento. En la portada sigue siendo un `<h2>`, donde el
+ *  `<h1>` es el del hero. Solo cambia el nivel del encabezado, no el aspecto. */
+export default function Melipona({ comoPagina }: { comoPagina?: boolean }) {
   const textoRef = useReveal<HTMLDivElement>("group");
   const datosRef = useReveal<HTMLUListElement>("group");
 
@@ -28,7 +31,7 @@ export default function Melipona() {
       <Wrap>
         <div ref={textoRef} data-reveal-group className="max-w-[62ch]">
           <Eyebrow>{melipona.eyebrow}</Eyebrow>
-          <H2Rust>{melipona.title}</H2Rust>
+          <H2Rust as={comoPagina ? "h1" : "h2"}>{melipona.title}</H2Rust>
           <Body intro>{melipona.intro}</Body>
         </div>
 

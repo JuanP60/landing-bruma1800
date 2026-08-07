@@ -573,6 +573,51 @@ sección con su borde superior en 0.
 
 ---
 
+### 2.14 De anclas a páginas propias
+
+El cliente pidió que cada pestaña del menú **abriera una página aparte** con más
+detalle, en vez de desplazar dentro de la portada. Hay cuatro rutas nuevas:
+`/productos`, `/melipona`, `/quienes-somos` y `/club`. Navegación normal en la
+misma pestaña, con `next/link`: el botón de atrás del navegador funciona y no se
+recarga el documento (medido: las entradas de navegación no suben al pulsar).
+
+> **Aviso que se dio antes de construir nada: no hay información más detallada
+> que la que ya estaba.** Los hechos verificados son los que son y todos estaban
+> publicados. El cliente eligió montar la estructura y **marcar los huecos**, así
+> que cada página lleva un bloque `<Pendiente>` que dice por escrito qué falta,
+> sin rellenarlo. Ninguna de esas cajas afirma un dato que no esté verificado.
+
+**Las páginas no llevan entradilla propia.** La primera versión ponía encima un
+bloque con eyebrow, titular y bajada, y en `/melipona` y `/club` el resultado era
+el mismo titular dos veces seguidas con casi el mismo texto debajo — se ve en la
+captura del primer intento. Cada sección ya se presenta sola; lo único que hacía
+falta era que su titular fuera el `<h1>` de la página, y para eso está la prop
+`comoPagina` de `Portafolio`, `Origen`, `Melipona` y `Club`. Solo cambia el nivel
+del encabezado, no el aspecto. `PageIntro` se creó, quedó sin uso y se retiró.
+
+**Las secciones se reutilizan, no se duplican.** `/productos` monta el mismo
+`<Portafolio>` de la portada, `/quienes-somos` junta `<Origen>` y `<Calidad>`,
+etc. Copiar el copy a otro archivo habría creado dos sitios donde cambiar un
+precio, que es exactamente cómo divergen dos versiones.
+
+**La portada conserva sus secciones.** Sigue siendo el resumen; las páginas son
+el detalle. Sus `id` (`#inicio`, `#portafolio`, `#melipona`, `#quienes-somos`,
+`#club`) se quedan puestos: el botón «Ver el portafolio» del hero los sigue
+usando.
+
+`SiteHeader` es la cabecera de las páginas interiores: logo que vuelve a la
+portada y el mismo menú, sobre el azul bruma del hero para que al cambiar de
+página no parezca otro sitio. La pestaña activa se decide con `usePathname` y no
+con una marca fija en los datos, así sigue siendo correcta aunque alguien entre
+directo a `/club` desde un enlace.
+
+**Verificado** a 390 y 1440, en las cinco páginas: título de documento propio, un
+solo `<h1>`, la pestaña correcta marcada con `aria-current`, `#main-content`
+presente —el atajo de «Saltar al contenido» funciona en todas—, pie, y **0
+desborde**. `tools/medir-paginas.mjs`.
+
+---
+
 ## 3. Bugs encontrados y corregidos en la migración
 
 Dos rondas de QA después del primer build: una comparando colores contra el
@@ -777,6 +822,10 @@ futura de este proyecto:
   sitio estático siguen siendo 7, es por eso y no por una divergencia.
 - Puntajes SCA `87.5|83.0`.
 - Destello: cruza en **1062 ms** solo y **1067 ms** con el cursor encima.
+- Las **cinco páginas** (`/`, `/productos`, `/melipona`, `/quienes-somos`,
+  `/club`) a 390 y 1440: título propio, un solo `<h1>`, la pestaña correcta con
+  `aria-current`, `#main-content` presente, pie, y 0 desborde. Navegación del
+  lado del cliente, sin recarga de documento.
 
 ---
 
@@ -790,6 +839,16 @@ Lo que falta depende de material o de decisiones del cliente:
       renders del propio producto (§2.6) y la del Club se resolvió con la tarjeta
       (§2.7). Si algún día llega una foto real de la familia, hay que decidir si
       sustituye al vídeo y apuntarla a mano: ya no queda respaldo automático.
+- [ ] **BLOQUEA EL DESPLIEGUE — los cuatro bloques `<Pendiente>`.** Las páginas
+      interiores llevan cada una una caja de borde discontinuo que declara qué
+      contenido falta (§2.14). **Ninguna debe salir a producción**: o el cliente
+      aporta el texto, o la caja se retira. Lo que hace falta, por página:
+      notas de cata y proceso de cada línea (`/productos`); cómo se entra al
+      programa, plazos, cobertura y pago (`/melipona`); la historia de las dos
+      familias y su foto (`/quienes-somos`); beneficios, acceso y fecha de
+      apertura (`/club`).
+- [ ] **El copy de la sección Melipona sigue siendo un borrador** (§2.13), tanto
+      en la portada como en `/melipona`.
 - [ ] **Testimonios reales.** La sección sigue sin existir a propósito; no
       rellenar con texto inventado.
 - [ ] **Conectar `N8N_WEBHOOK_URL`.** El chatbot tiene el scaffold listo y

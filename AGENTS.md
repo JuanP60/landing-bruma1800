@@ -166,7 +166,14 @@ Evitar: anglicismos innecesarios, superlativos vacíos, tono corporativo genéri
    testimonios reales todavía, no rellenar con citas inventadas.
 5. Todo el copy, precios y links vive en `src/lib/content.ts` — cambios de
    contenido van ahí, no repartidos en JSX.
-6. **El copy de la sección Melipona es un borrador sin aprobar.** Se escribió el
+6. **El sitio ya no es una sola página.** Hay cinco: la portada y
+   `/productos`, `/melipona`, `/quienes-somos` y `/club`. Las páginas
+   **reutilizan** las secciones de la portada, no copian su copy: un precio se
+   cambia en `content.ts` y cambia en los dos sitios. Ver `handoff.md` §2.14.
+7. **Los cuatro bloques `<Pendiente>` bloquean el despliegue.** Declaran por
+   escrito qué contenido falta en cada página interior. No sacarlos a producción
+   con la caja puesta: o llega el texto del cliente, o la caja se retira.
+8. **El copy de la sección Melipona es un borrador sin aprobar.** Se escribió el
    3 de agosto de 2026 para dar destino a la pestaña del menú, usando solo los
    hechos verificados de más abajo. No añadir a quién va dirigido el programa,
    plazos ni condiciones de pago mientras el cliente no los dicte. Ver

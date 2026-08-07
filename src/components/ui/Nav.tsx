@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { menu } from "@/lib/content";
 
@@ -10,9 +12,14 @@ import { menu } from "@/lib/content";
  * habría dejado diez enlaces en el documento, y un lector de pantalla los lee
  * todos aunque la mitad estén ocultos con `display:none`.
  *
- * Son anclas dentro de la misma página, no rutas: el desplazamiento suave ya lo
- * da `scroll-behavior: smooth` en globals.css, que además se apaga solo con
- * `prefers-reduced-motion`. No hace falta JS para eso.
+ * Cada pestaña es una **página propia**, no un ancla: el cliente pidió que
+ * llevaran a una vista aparte con más detalle en vez de desplazar dentro de la
+ * portada. Van con `next/link`, así que la navegación es del lado del cliente y
+ * el botón de atrás del navegador funciona.
+ *
+ * La pestaña activa se decide con `usePathname` y no con una marca fija en los
+ * datos: así sigue siendo correcta se entre por donde se entre, incluso si
+ * alguien abre `/club` directamente desde un enlace.
  *
  * Accesibilidad, con el mismo criterio que el widget del chat (auditoría WIG,
  * §4 del handoff): `aria-expanded` y `aria-controls` en el botón, cierre con
@@ -22,6 +29,7 @@ import { menu } from "@/lib/content";
 export default function Nav() {
   const [abierto, setAbierto] = useState(false);
   const botonRef = useRef<HTMLButtonElement>(null);
+  const ruta = usePathname();
 
   useEffect(() => {
     if (!abierto) return;
@@ -55,16 +63,16 @@ export default function Nav() {
       <ul id="nav-lista" className="nav__lista" data-abierto={abierto}>
         {menu.map((item) => (
           <li key={item.href}>
-            <a
+            <Link
               href={item.href}
               className="nav__enlace"
-              /* La pestaña de inicio es la ventana actual. Se anuncia como tal
-                 y no se deja solo al color, que un lector de pantalla no ve. */
-              aria-current={"actual" in item && item.actual ? "page" : undefined}
+              /* La página en la que se está se anuncia como tal, y no se deja
+                 solo al color, que un lector de pantalla no ve. */
+              aria-current={ruta === item.href ? "page" : undefined}
               onClick={() => setAbierto(false)}
             >
               {item.label}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

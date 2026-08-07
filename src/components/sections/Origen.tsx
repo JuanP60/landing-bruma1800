@@ -7,7 +7,8 @@ import { Eyebrow, H2Rust, Body } from "@/components/ui/Typography";
 import DecorOrigen from "@/components/decor/DecorOrigen";
 import { origen } from "@/lib/content";
 
-export default function Origen() {
+/** `comoPagina`: ver la nota en `Melipona.tsx` — el titular sube a `<h1>`. */
+export default function Origen({ comoPagina }: { comoPagina?: boolean }) {
   const mediaRef = useReveal<HTMLElement>("single");
   const textRef = useReveal<HTMLDivElement>("group");
 
@@ -37,7 +38,7 @@ export default function Origen() {
               --tierra da 5.02:1 por sí solo. Esa variante existe para compensar el
               azul bruma y aquí ya no hace falta. */}
           <Eyebrow>{origen.eyebrow}</Eyebrow>
-          <H2Rust>{origen.title}</H2Rust>
+          <H2Rust as={comoPagina ? "h1" : "h2"}>{origen.title}</H2Rust>
           {origen.paragraphs.map((html, i) => (
             <Body key={i} dangerouslySetInnerHTML={{ __html: html }} />
           ))}

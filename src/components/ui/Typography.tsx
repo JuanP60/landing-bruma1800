@@ -39,19 +39,23 @@ export function Eyebrow({ variant = "default", className = "", children, ...prop
 type H2RustProps = HTMLAttributes<HTMLHeadingElement> & {
   light?: boolean;
   wide?: boolean;
+  /** `h1` en las páginas interiores, donde este es el encabezado principal del
+   *  documento; en la portada ese papel lo tiene el H1 del hero. El aspecto no
+   *  cambia: solo el nivel del encabezado. */
+  as?: "h1" | "h2";
   children: ReactNode;
 };
 
-export function H2Rust({ light, wide, className = "", children, ...props }: H2RustProps) {
+export function H2Rust({ light, wide, as: Tag = "h2", className = "", children, ...props }: H2RustProps) {
   return (
-    <h2
+    <Tag
       className={`font-titulo mb-5 text-[clamp(32px,5.2vw,52px)] leading-[1.08] ${wide ? "" : "max-w-[20ch]"} ${
         light ? "text-hueso" : "text-cafe-profundo"
       } ${className}`}
       {...props}
     >
       {children}
-    </h2>
+    </Tag>
   );
 }
 

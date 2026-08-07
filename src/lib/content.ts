@@ -34,12 +34,55 @@ export const whatsappLinks = {
  * `Inicio` apunta a la ventana actual y se marca con `aria-current="page"`.
  */
 export const menu = [
-  { label: "Inicio", href: "#inicio", actual: true },
-  { label: "Productos", href: "#portafolio" },
-  { label: "Línea Melipona", href: "#melipona" },
-  { label: "Quiénes somos", href: "#quienes-somos" },
-  { label: "Club 1800", href: "#club" },
+  { label: "Inicio", href: "/" },
+  { label: "Productos", href: "/productos" },
+  { label: "Línea Melipona", href: "/melipona" },
+  { label: "Quiénes somos", href: "/quienes-somos" },
+  { label: "Club 1800", href: "/club" },
 ] as const;
+
+/**
+ * Lo que **falta** en cada página propia, dicho por escrito.
+ *
+ * Las páginas no llevan entradilla: cada sección ya se presenta sola, y ponerle
+ * una encima repetía el titular dos veces seguidas en `/melipona` y `/club`. Lo
+ * único que necesitaban estos datos era declarar el hueco de contenido, que se
+ * pinta con `<Pendiente>`.
+ *
+ * Estos textos describen lo que falta; **no lo rellenan**. Ninguno afirma un
+ * dato que no esté verificado, y ninguno debe salir a producción: o el cliente
+ * aporta el contenido, o la caja se retira. Ver `handoff.md` §6.
+ */
+export const paginas = {
+  productos: {
+    pendiente: {
+      titulo: "Ficha detallada de cada línea",
+      texto:
+        "Aquí van las notas de cata, el perfil de tueste, el proceso y el molido recomendado de cada línea. No hay nada de eso verificado todavía: hace falta que la finca lo dicte para poder publicarlo.",
+    },
+  },
+  melipona: {
+    pendiente: {
+      titulo: "Cómo se entra al programa",
+      texto:
+        "A quién va dirigido, cómo se hace el primer pedido, plazos de entrega, cobertura geográfica y condiciones de pago. Ninguno de esos datos está confirmado, así que la página se queda con las cuatro condiciones que sí lo están.",
+    },
+  },
+  quienesSomos: {
+    pendiente: {
+      titulo: "La historia de las dos familias",
+      texto:
+        "Cómo empezó la finca, quién la trabaja hoy y qué cambió en 2025 al nacer la marca. Está la foto de la familia pendiente y el relato sin escribir; los datos duros que sí están verificados ya se muestran arriba.",
+    },
+  },
+  club: {
+    pendiente: {
+      titulo: "Qué incluye la membresía",
+      texto:
+        "Beneficios, cómo se entra, qué son los drops exclusivos y cuándo abre. El club todavía no está abierto y nada de eso está cerrado: por eso el único compromiso publicado sigue siendo que se avisa por Instagram.",
+    },
+  },
+} as const;
 
 /**
  * BORRADOR pendiente de aprobación del cliente. Todo lo que hay aquí sale de
