@@ -4,9 +4,21 @@ Estado del trabajo para retomarlo después de un `/clear`. Complementa a `README
 (stack, estructura de carpetas, cómo correr, cómo activar el chatbot) — este
 documento es la bitácora de **qué se hizo y por qué**, no el mapa del código.
 
-**Última actualización:** 3 de agosto de 2026. Recoge tres sesiones: la migración
-inicial (31 de julio), la de diseño del 3 de agosto —en la que este proyecto pasó
-a ser **el activo**, ver §2.5— y la del bucle de vídeo de la finca, §2.8.
+**Última actualización:** 3 de agosto de 2026. Recoge cuatro sesiones:
+
+1. La **migración inicial** (31 de julio) — §2.1 a §2.4.
+2. La de **diseño** del 3 de agosto, en la que este proyecto pasó a ser **el
+   activo** — §2.5 a §2.7.
+3. La del **bucle de vídeo** de la finca, el Club en 3D y el verde montaña de
+   calidad — §2.8 a §2.12.
+4. La del **menú y las páginas propias**, que convirtió el sitio de una sola
+   página en cinco — §2.13 y §2.14.
+
+> **El sitio ya no es una landing de una página.** Son cinco: la portada y
+> `/productos`, `/melipona`, `/quienes-somos` y `/club`. Las páginas reutilizan
+> las secciones de la portada, así que un precio se cambia en un solo sitio. El
+> detalle está en §2.14, y **hay cuatro huecos de contenido declarados que
+> bloquean el despliegue** (§6).
 
 ---
 
@@ -18,6 +30,12 @@ npm ci
 npm run build
 npm run start          # http://localhost:3000
 ```
+
+Durante estas sesiones se ha servido en el **3100** (`npx next start -p 3100`)
+porque el 3000 está ocupado por otro proceso en el equipo del cliente. Los
+verificadores de §5 apuntan ahí por defecto.
+
+Las cinco páginas: `/`, `/productos`, `/melipona`, `/quienes-somos` y `/club`.
 
 `npm run dev` sirve para trabajar, pero **verificar siempre contra el build de
 producción**: el optimizador de imágenes y el CSS de Tailwind se comportan
@@ -87,6 +105,18 @@ futuro del sitio.
 - El resto de la página (tipografía, botones, cards, grillas) sí es Tailwind
   puro, componente por componente, con primitivas reutilizables en
   `components/ui/` (`Wrap`, `Button`, `Eyebrow`/`H2Rust`/`Body`, `MediaFrame`).
+
+> **Lo que se ha añadido después de la migración**, para no tener que
+> reconstruirlo leyendo el árbol de archivos:
+>
+> - `components/ui/`: `MediaVideo` (§2.8), `Nav` (§2.13) y `Pendiente` (§2.14).
+> - `components/layout/`: `SiteHeader` y `PaginaInterior`, el armazón de las
+>   cuatro páginas propias (§2.14). Carpeta nueva.
+> - `hooks/`: `useTilt3D` (§2.11).
+> - `components/sections/`: `Melipona` (§2.13).
+> - Las secciones que sirven de cuerpo a una página interior aceptan
+>   `comoPagina`, que sube su titular de `h2` a `h1`. Solo cambia el nivel del
+>   encabezado, no el aspecto.
 
 ### 2.3 Fix de responsive pedido por el cliente
 
@@ -328,7 +358,7 @@ margen del 2% significa que un rato más tarde ya no pasa. Bajando la capa alta 
 leyendo. La capa baja puede ser la más suelta porque cae por la zona de la
 tarjeta, que es opaca.
 
-`tools/medir-contraste-club.mjs` lo comprueba con el criterio de siempre: tapa el
+`tools/medir-contraste.mjs` lo comprueba con el criterio de siempre: tapa el
 texto, y busca el **peor píxel** que hay detrás de cada línea en nueve instantes
 distintos del ciclo. Ni promedios ni una sola captura — una nube pasa por encima
 de unas letras y no de otras. El color de cada línea se lee con
@@ -712,8 +742,29 @@ proyecto original y no es terreno de esta migración.
 ## 5. Cómo verificar
 
 `npm run build` y `npx eslint src --max-warnings=0` son el mínimo, pero **no
-bastan**: casi todos los bugs de estas dos sesiones compilaban perfectamente.
-Lo que los encontró fue medir en un navegador de verdad.
+bastan**: casi todos los bugs de estas sesiones compilaban perfectamente. Lo que
+los encontró fue medir en un navegador de verdad.
+
+### Los verificadores, de un vistazo
+
+Todos necesitan Chrome con CDP abierto (más abajo) y el sitio servido con
+`npx next start -p 3100`. Los `.mjs` no llevan dependencias: usan `fetch` y
+`WebSocket` de Node 22 y hablan CDP a pelo.
+
+| script | qué comprueba | §|
+|---|---|---|
+| `medir-paginas.mjs [ancho]` | las cinco páginas: título propio, un solo `h1`, pestaña activa, `#main-content`, pie y desborde | 2.14 |
+| `medir-menu.mjs [ancho]` | que las pestañas apunten a algo que existe, el plegado de móvil, Escape y foco | 2.13 |
+| `medir-contraste.mjs [club\|calidad\|todas]` | peor píxel detrás de cada línea de texto, con el color leído del DOM | 2.9, 2.10 |
+| `medir-video-origen.mjs` | que el bucle arranque, **avance de verdad**, pare con el botón y al salir de pantalla | 2.8 |
+| `medir-tilt-club.mjs` | la inclinación 3D, descomponiendo la matriz real; y que el toque no arrastre la página | 2.11 |
+| `medir-abeja-cta.mjs [ancho]` | que la abeja salga con el cursor y al pulsar, y que **vuelva a esconderse** | 2.12 |
+
+**Una anchura por ejecución.** Los tres últimos la reciben por argumento a
+propósito: recorrer varios anchos en la misma pestaña daba números falsos, porque
+se quedaba el botón del ratón pulsado entre iteraciones y se arrastraba la escala
+de la emulación anterior. Si hay que comparar anchos, se llama una vez por cada
+uno.
 
 ### Herramientas de la casa
 
